@@ -10,9 +10,11 @@
 
 #include "Record.h"
 #include "StorageManager.h"
-#include <QObject>
+
 #include <QList>
 #include <QMap>
+#include <QObject>
+
 
 namespace CampusCard {
 
@@ -154,10 +156,10 @@ private:
      */
     void saveRecordsForCard(const QString& cardId);
 
-    QMap<QString, QList<Record>> m_records;     ///< 卡号到记录列表的映射
-    QMap<QString, QString> m_activeSessions;    ///< 卡号到当前活动会话记录ID的映射
+    QMap<QString, QList<Record>> m_records;   ///< 卡号到记录列表的映射
+    QMap<QString, QString> m_activeSessions;  ///< 卡号到当前活动会话记录ID的映射
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // RECORDMANAGER_H
+#endif  // RECORDMANAGER_H

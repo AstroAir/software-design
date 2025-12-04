@@ -24,8 +24,8 @@ LoginResult studentLogin(const QString& cardId, const QString& password);
 
 **参数**：
 
-- `cardId` - 卡号
-- `password` - 密码
+-   `cardId` - 卡号
+-   `password` - 密码
 
 **返回值**：`LoginResult` 枚举值
 
@@ -48,7 +48,7 @@ LoginResult adminLogin(const QString& password);
 
 **参数**：
 
-- `password` - 管理员密码
+-   `password` - 管理员密码
 
 **返回值**：`LoginResult` 枚举值
 
@@ -70,8 +70,8 @@ bool changeAdminPassword(const QString& oldPassword, const QString& newPassword)
 
 **参数**：
 
-- `oldPassword` - 当前密码
-- `newPassword` - 新密码
+-   `oldPassword` - 当前密码
+-   `newPassword` - 新密码
 
 **返回值**：修改是否成功
 
@@ -123,7 +123,7 @@ explicit CardManager(QObject* parent = nullptr);
 
 **参数**：
 
-- `cardId` - 卡号
+-   `cardId` - 卡号
 
 **返回值**：找到返回 `Card`，否则返回 `std::nullopt`
 
@@ -146,10 +146,10 @@ bool createCard(const QString& cardId, const QString& name,
 
 **参数**：
 
-- `cardId` - 卡号
-- `name` - 姓名
-- `studentId` - 学号
-- `balance` - 初始余额（默认 0）
+-   `cardId` - 卡号
+-   `name` - 姓名
+-   `studentId` - 学号
+-   `balance` - 初始余额（默认 0）
 
 **返回值**：创建是否成功
 
@@ -163,8 +163,8 @@ bool rechargeCard(const QString& cardId, double amount);
 
 **参数**：
 
-- `cardId` - 卡号
-- `amount` - 充值金额
+-   `cardId` - 卡号
+-   `amount` - 充值金额
 
 **返回值**：充值是否成功
 
@@ -224,8 +224,8 @@ bool startSession(const QString& cardId, const QString& location);
 
 **参数**：
 
-- `cardId` - 卡号
-- `location` - 上机地点
+-   `cardId` - 卡号
+-   `location` - 上机地点
 
 **返回值**：是否成功开始
 
@@ -239,7 +239,7 @@ double endSession(const QString& cardId);
 
 **参数**：
 
-- `cardId` - 卡号
+-   `cardId` - 卡号
 
 **返回值**：本次上机费用
 
@@ -272,7 +272,7 @@ double endSession(const QString& cardId);
 按日期查询记录。
 
 ```cpp
-[[nodiscard]] QList<Record> getRecordsByDate(const QString& cardId, 
+[[nodiscard]] QList<Record> getRecordsByDate(const QString& cardId,
                                               const QString& date) const;
 ```
 
@@ -401,10 +401,10 @@ bool importData(const QString& filePath, bool merge = false);
 
 **参数**：
 
-- `filePath` - 文件路径
-- `merge` - 是否合并（false 为覆盖）
+-   `filePath` - 文件路径
+-   `merge` - 是否合并（false 为覆盖）
 
 ## 下一步
 
-- [信号与槽](signals-slots.md) - 了解事件通信
-- [开发环境](../development/environment.md) - 配置开发环境
+-   [信号与槽](signals-slots.md) - 了解事件通信
+-   [开发环境](../development/environment.md) - 配置开发环境

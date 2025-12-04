@@ -9,8 +9,10 @@
 #define USER_H
 
 #include "Types.h"
-#include <QString>
+
 #include <QJsonObject>
+#include <QString>
+
 
 namespace CampusCard {
 
@@ -79,11 +81,11 @@ public:
     [[nodiscard]] bool isStudent() const { return m_role == UserRole::Student; }
 
 private:
-    QString m_userId;           ///< 用户ID
+    QString m_userId;                     ///< 用户ID
     UserRole m_role = UserRole::Student;  ///< 用户角色
-    QString m_cardId;           ///< 关联的校园卡号（学生专用）
+    QString m_cardId;                     ///< 关联的校园卡号（学生专用）
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // USER_H
+#endif  // USER_H

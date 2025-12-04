@@ -31,9 +31,8 @@ public:
      * @param cardId 要充值的卡号
      * @param parent 父窗口
      */
-    explicit RechargeDialog(CardManager* cardManager,
-                           const QString& cardId,
-                           QWidget* parent = nullptr);
+    explicit RechargeDialog(CardManager* cardManager, const QString& cardId,
+                            QWidget* parent = nullptr);
 
 private slots:
     /**
@@ -47,15 +46,15 @@ private:
      */
     void initUI();
 
-    CardManager* m_cardManager;     ///< 卡管理器
-    QString m_cardId;               ///< 卡号
-    
-    ElaText* m_cardInfoLabel;       ///< 卡信息标签
-    ElaText* m_balanceLabel;        ///< 余额标签
-    ElaLineEdit* m_amountEdit;      ///< 金额输入框
-    ElaPushButton* m_rechargeBtn;   ///< 充值按钮
+    CardManager* m_cardManager;  ///< 卡管理器
+    QString m_cardId;            ///< 卡号
+
+    ElaText* m_cardInfoLabel;      ///< 卡信息标签
+    ElaText* m_balanceLabel;       ///< 余额标签
+    ElaLineEdit* m_amountEdit;     ///< 金额输入框
+    ElaPushButton* m_rechargeBtn;  ///< 充值按钮
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // RECHARGEDIALOG_H
+#endif  // RECHARGEDIALOG_H

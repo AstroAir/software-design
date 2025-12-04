@@ -10,17 +10,20 @@
 
 #include "Card.h"
 #include "Record.h"
-#include <QString>
+
 #include <QList>
 #include <QMap>
+#include <QString>
+
 #include <memory>
+
 
 namespace CampusCard {
 
 /**
  * @class StorageManager
  * @brief 单例存储管理器，负责所有数据的文件读写
- * 
+ *
  * 数据存储结构：
  * - data/cards.json: 所有校园卡信息
  * - data/admin.json: 管理员密码
@@ -175,6 +178,6 @@ private:
     QString m_dataPath;  ///< 数据目录路径
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // STORAGEMANAGER_H
+#endif  // STORAGEMANAGER_H

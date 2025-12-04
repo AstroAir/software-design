@@ -6,18 +6,18 @@
 
 ### 必需软件
 
-| 软件 | 最低版本 | 说明 |
-|------|----------|------|
-| **CMake** | 3.24+ | 构建系统 |
-| **Qt6** | 6.5+ | GUI 框架 |
+| 软件           | 最低版本   | 说明                           |
+| -------------- | ---------- | ------------------------------ |
+| **CMake**      | 3.24+      | 构建系统                       |
+| **Qt6**        | 6.5+       | GUI 框架                       |
 | **C++ 编译器** | C++20 支持 | MSVC 2019+、GCC 10+、Clang 10+ |
-| **Git** | 2.0+ | 版本控制（需支持子模块） |
+| **Git**        | 2.0+       | 版本控制（需支持子模块）       |
 
 ### 可选软件
 
-- **Ninja** - 更快的构建工具（推荐）
-- **Visual Studio 2022** - Windows 开发环境
-- **MSYS2** - Windows 上的 MinGW 环境
+-   **Ninja** - 更快的构建工具（推荐）
+-   **Visual Studio 2022** - Windows 开发环境
+-   **MSYS2** - Windows 上的 MinGW 环境
 
 ## 获取源码
 
@@ -29,7 +29,7 @@ cd software-design
 ```
 
 !!! warning "重要"
-    必须使用 `--recursive` 参数以同时克隆 ElaWidgetTools 子模块。
+必须使用 `--recursive` 参数以同时克隆 ElaWidgetTools 子模块。
 
 ### 更新子模块
 
@@ -139,7 +139,7 @@ cp CMakeUserPresets.json.example CMakeUserPresets.json
 ```
 
 !!! note "首次运行"
-    程序首次运行时会自动在可执行文件同级目录创建 `data/` 文件夹并生成示例数据。
+程序首次运行时会自动在可执行文件同级目录创建 `data/` 文件夹并生成示例数据。
 
 ## 常见问题
 
@@ -163,11 +163,11 @@ git submodule update --init --recursive --force
 
 确保使用支持 C++20 的编译器：
 
-- MSVC 2019 16.10+
-- GCC 10+
-- Clang 10+
+-   MSVC 2019 16.10+
+-   GCC 10+
+-   Clang 10+
 
 ## 下一步
 
-- [使用教程](usage.md) - 了解如何使用系统
-- [系统概述](../architecture/overview.md) - 深入了解系统架构
+-   [使用教程](usage.md) - 了解如何使用系统
+-   [系统概述](../architecture/overview.md) - 深入了解系统架构

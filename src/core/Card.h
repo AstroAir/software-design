@@ -9,15 +9,17 @@
 #define CARD_H
 
 #include "Types.h"
-#include <QString>
+
 #include <QJsonObject>
+#include <QString>
+
 
 namespace CampusCard {
 
 /**
  * @class Card
  * @brief 校园卡实体类，存储卡的基本信息和状态
- * 
+ *
  * 包含卡号、姓名、学号、充值记录、余额和状态等信息
  */
 class Card {
@@ -34,8 +36,8 @@ public:
      * @param studentId 学号
      * @param balance 初始余额，默认为0
      */
-    Card(const QString& cardId, const QString& name, 
-         const QString& studentId, double balance = 0.0);
+    Card(const QString& cardId, const QString& name, const QString& studentId,
+         double balance = 0.0);
 
     /**
      * @brief 从JSON对象反序列化
@@ -51,7 +53,7 @@ public:
     [[nodiscard]] QJsonObject toJson() const;
 
     // ========== Getters ==========
-    
+
     /**
      * @brief 获取卡号
      * @return 卡号字符串
@@ -174,16 +176,16 @@ public:
     [[nodiscard]] bool isUsable() const;
 
 private:
-    QString m_cardId;           ///< 卡号（唯一标识）
-    QString m_name;             ///< 持卡人姓名
-    QString m_studentId;        ///< 学号
-    double m_totalRecharge = 0.0;   ///< 累计充值金额
-    double m_balance = 0.0;         ///< 当前余额
+    QString m_cardId;                       ///< 卡号（唯一标识）
+    QString m_name;                         ///< 持卡人姓名
+    QString m_studentId;                    ///< 学号
+    double m_totalRecharge = 0.0;           ///< 累计充值金额
+    double m_balance = 0.0;                 ///< 当前余额
     CardState m_state = CardState::Normal;  ///< 卡状态
-    int m_loginAttempts = 0;        ///< 密码错误次数
-    QString m_password = "123456";  ///< 登录密码（默认123456）
+    int m_loginAttempts = 0;                ///< 密码错误次数
+    QString m_password = "123456";          ///< 登录密码（默认123456）
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // CARD_H
+#endif  // CARD_H

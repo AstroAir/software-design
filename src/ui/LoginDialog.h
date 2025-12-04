@@ -75,18 +75,18 @@ private:
      */
     void updateHintLabel(const QString& message, bool isError = false);
 
-    AuthManager* m_authManager;     ///< 认证管理器
-    CardManager* m_cardManager;     ///< 卡管理器（用于注册）
+    AuthManager* m_authManager;  ///< 认证管理器
+    CardManager* m_cardManager;  ///< 卡管理器（用于注册）
 
-    ElaComboBox* m_roleCombo;       ///< 角色选择下拉框
-    ElaText* m_cardIdLabel;         ///< 卡号标签
-    ElaLineEdit* m_cardIdEdit;      ///< 卡号输入框
-    ElaLineEdit* m_passwordEdit;    ///< 密码输入框
-    ElaPushButton* m_loginButton;   ///< 登录按钮
-    ElaPushButton* m_registerButton; ///< 注册按钮
-    ElaText* m_hintLabel;           ///< 提示信息标签（显示剩余次数等）
+    ElaComboBox* m_roleCombo;         ///< 角色选择下拉框
+    ElaText* m_cardIdLabel;           ///< 卡号标签
+    ElaLineEdit* m_cardIdEdit;        ///< 卡号输入框
+    ElaLineEdit* m_passwordEdit;      ///< 密码输入框
+    ElaPushButton* m_loginButton;     ///< 登录按钮
+    ElaPushButton* m_registerButton;  ///< 注册按钮
+    ElaText* m_hintLabel;             ///< 提示信息标签（显示剩余次数等）
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // LOGINDIALOG_H
+#endif  // LOGINDIALOG_H

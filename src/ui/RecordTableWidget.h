@@ -8,8 +8,10 @@
 #ifndef RECORDTABLEWIDGET_H
 #define RECORDTABLEWIDGET_H
 
-#include <QWidget>
 #include "core/Record.h"
+
+#include <QWidget>
+
 
 class ElaTableView;
 class QStandardItemModel;
@@ -47,10 +49,10 @@ private:
      */
     void initUI();
 
-    ElaTableView* m_tableView;          ///< 表格视图
-    QStandardItemModel* m_model;        ///< 数据模型
+    ElaTableView* m_tableView;    ///< 表格视图
+    QStandardItemModel* m_model;  ///< 数据模型
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // RECORDTABLEWIDGET_H
+#endif  // RECORDTABLEWIDGET_H

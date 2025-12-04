@@ -8,8 +8,9 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <QString>
 #include <QDateTime>
+#include <QString>
+
 
 namespace CampusCard {
 
@@ -17,25 +18,25 @@ namespace CampusCard {
  * @brief 用户角色枚举
  */
 enum class UserRole {
-    Student,    ///< 学生角色
-    Admin       ///< 管理员角色
+    Student,  ///< 学生角色
+    Admin     ///< 管理员角色
 };
 
 /**
  * @brief 校园卡状态枚举
  */
 enum class CardState {
-    Normal = 0,     ///< 正常状态
-    Lost = 1,       ///< 挂失状态
-    Frozen = 2      ///< 冻结状态（密码错误3次）
+    Normal = 0,  ///< 正常状态
+    Lost = 1,    ///< 挂失状态
+    Frozen = 2   ///< 冻结状态（密码错误3次）
 };
 
 /**
  * @brief 上机状态枚举
  */
 enum class SessionState {
-    Offline = 0,    ///< 离线/已结束
-    Online = 1      ///< 上机中
+    Offline = 0,  ///< 离线/已结束
+    Online = 1    ///< 上机中
 };
 
 /**
@@ -45,10 +46,14 @@ enum class SessionState {
  */
 inline QString cardStateToString(CardState state) {
     switch (state) {
-        case CardState::Normal: return QStringLiteral("正常");
-        case CardState::Lost:   return QStringLiteral("挂失");
-        case CardState::Frozen: return QStringLiteral("冻结");
-        default: return QStringLiteral("未知");
+    case CardState::Normal:
+        return QStringLiteral("正常");
+    case CardState::Lost:
+        return QStringLiteral("挂失");
+    case CardState::Frozen:
+        return QStringLiteral("冻结");
+    default:
+        return QStringLiteral("未知");
     }
 }
 
@@ -59,9 +64,12 @@ inline QString cardStateToString(CardState state) {
  */
 inline QString sessionStateToString(SessionState state) {
     switch (state) {
-        case SessionState::Offline: return QStringLiteral("离线");
-        case SessionState::Online:  return QStringLiteral("上机中");
-        default: return QStringLiteral("未知");
+    case SessionState::Offline:
+        return QStringLiteral("离线");
+    case SessionState::Online:
+        return QStringLiteral("上机中");
+    default:
+        return QStringLiteral("未知");
     }
 }
 
@@ -80,6 +88,6 @@ const QString DEFAULT_ADMIN_PASSWORD = QStringLiteral("admin123");
  */
 constexpr int MAX_LOGIN_ATTEMPTS = 3;
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // TYPES_H
+#endif  // TYPES_H

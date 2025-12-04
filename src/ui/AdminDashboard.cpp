@@ -6,38 +6,35 @@
  */
 
 #include "AdminDashboard.h"
+
+#include "ElaContentDialog.h"
+#include "ElaLineEdit.h"
+#include "ElaMessageBar.h"
+#include "ElaPushButton.h"
+#include "ElaScrollPageArea.h"
+#include "ElaTableView.h"
+#include "ElaText.h"
 #include "RechargeDialog.h"
 #include "StatisticsWidget.h"
 
-#include "ElaTableView.h"
-#include "ElaPushButton.h"
-#include "ElaLineEdit.h"
-#include "ElaText.h"
-#include "ElaMessageBar.h"
-#include "ElaContentDialog.h"
-#include "ElaScrollPageArea.h"
-
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QHeaderView>
-#include <QStandardItemModel>
 #include <QDate>
 #include <QDateEdit>
-#include <QInputDialog>
 #include <QFileDialog>
-#include <QMessageBox>
+#include <QGridLayout>
 #include <QGroupBox>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QStandardItemModel>
+#include <QVBoxLayout>
+
 
 namespace CampusCard {
 
-AdminDashboard::AdminDashboard(CardManager* cardManager, 
-                               RecordManager* recordManager,
+AdminDashboard::AdminDashboard(CardManager* cardManager, RecordManager* recordManager,
                                QWidget* parent)
-    : QWidget(parent)
-    , m_cardManager(cardManager)
-    , m_recordManager(recordManager)
-{
+    : QWidget(parent), m_cardManager(cardManager), m_recordManager(recordManager) {
     initUI();
     initConnections();
 }
@@ -56,14 +53,14 @@ void AdminDashboard::initUI() {
     QGroupBox* statsGroup = new QGroupBox(QStringLiteral("📊 统计概览"), this);
     QGridLayout* statsLayout = new QGridLayout(statsGroup);
     statsLayout->setSpacing(15);
-    
+
     // 总卡数
     auto* totalCardsTitle = new ElaText(QStringLiteral("总卡数："), statsGroup);
     m_totalCardsLabel = new ElaText(QStringLiteral("0 张"), statsGroup);
     m_totalCardsLabel->setTextPixelSize(16);
     statsLayout->addWidget(totalCardsTitle, 0, 0);
     statsLayout->addWidget(m_totalCardsLabel, 0, 1);
-    
+
     // 当前在线
     auto* onlineTitle = new ElaText(QStringLiteral("当前在线："), statsGroup);
     m_onlineCountLabel = new ElaText(QStringLiteral("0 人"), statsGroup);
@@ -71,7 +68,7 @@ void AdminDashboard::initUI() {
     m_onlineCountLabel->setStyleSheet(QStringLiteral("color: #27AE60;"));
     statsLayout->addWidget(onlineTitle, 0, 2);
     statsLayout->addWidget(m_onlineCountLabel, 0, 3);
-    
+
     // 收入统计（带日期选择）
     auto* incomeTitle = new ElaText(QStringLiteral("收入统计："), statsGroup);
     m_incomeDateEdit = new QDateEdit(statsGroup);
@@ -84,36 +81,31 @@ void AdminDashboard::initUI() {
     statsLayout->addWidget(incomeTitle, 1, 0);
     statsLayout->addWidget(m_incomeDateEdit, 1, 1);
     statsLayout->addWidget(m_incomeLabel, 1, 2, 1, 2);
-    
+
     statsLayout->setColumnStretch(1, 1);
     statsLayout->setColumnStretch(3, 1);
     mainLayout->addWidget(statsGroup);
 
     // ========== 搜索和操作栏 ==========
     QHBoxLayout* searchLayout = new QHBoxLayout();
-    
+
     m_searchEdit = new ElaLineEdit(this);
     m_searchEdit->setPlaceholderText(QStringLiteral("🔍 搜索卡号/姓名/学号..."));
     m_searchEdit->setFixedWidth(300);
     searchLayout->addWidget(m_searchEdit);
-    
+
     m_addCardBtn = new ElaPushButton(QStringLiteral("➕ 添加新卡"), this);
     searchLayout->addWidget(m_addCardBtn);
-    
+
     searchLayout->addStretch();
     mainLayout->addLayout(searchLayout);
 
     // 卡列表表格
     m_cardTable = new ElaTableView(this);
     m_cardModel = new QStandardItemModel(this);
-    m_cardModel->setHorizontalHeaderLabels({
-        QStringLiteral("卡号"),
-        QStringLiteral("姓名"),
-        QStringLiteral("学号"),
-        QStringLiteral("余额"),
-        QStringLiteral("累计充值"),
-        QStringLiteral("状态")
-    });
+    m_cardModel->setHorizontalHeaderLabels({QStringLiteral("卡号"), QStringLiteral("姓名"),
+                                            QStringLiteral("学号"), QStringLiteral("余额"),
+                                            QStringLiteral("累计充值"), QStringLiteral("状态")});
     m_cardTable->setModel(m_cardModel);
     m_cardTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_cardTable->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -139,7 +131,7 @@ void AdminDashboard::initUI() {
     cardOpLayout->addWidget(m_unfreezeBtn);
     cardOpLayout->addWidget(m_resetPwdBtn);
     cardOpLayout->addStretch();
-    
+
     mainLayout->addWidget(cardOpGroup);
 
     // ========== 系统操作按钮区域 ==========
@@ -178,24 +170,26 @@ void AdminDashboard::initConnections() {
     connect(m_cancelLostBtn, &ElaPushButton::clicked, this, &AdminDashboard::onCancelLostClicked);
     connect(m_unfreezeBtn, &ElaPushButton::clicked, this, &AdminDashboard::onUnfreezeClicked);
     connect(m_resetPwdBtn, &ElaPushButton::clicked, this, &AdminDashboard::onResetPasswordClicked);
-    
+
     // 系统操作按钮
     connect(m_statisticsBtn, &ElaPushButton::clicked, this, &AdminDashboard::onStatisticsClicked);
     connect(m_exportBtn, &ElaPushButton::clicked, this, &AdminDashboard::onExportClicked);
     connect(m_importBtn, &ElaPushButton::clicked, this, &AdminDashboard::onImportClicked);
-    connect(m_mockDataBtn, &ElaPushButton::clicked, this, &AdminDashboard::onGenerateMockDataClicked);
-    connect(m_changeAdminPwdBtn, &ElaPushButton::clicked, this, &AdminDashboard::onChangeAdminPasswordClicked);
+    connect(m_mockDataBtn, &ElaPushButton::clicked, this,
+            &AdminDashboard::onGenerateMockDataClicked);
+    connect(m_changeAdminPwdBtn, &ElaPushButton::clicked, this,
+            &AdminDashboard::onChangeAdminPasswordClicked);
     connect(m_addCardBtn, &ElaPushButton::clicked, this, &AdminDashboard::onAddCardClicked);
     connect(m_logoutBtn, &ElaPushButton::clicked, this, &AdminDashboard::logoutRequested);
-    
+
     // 表格选择和搜索
-    connect(m_cardTable->selectionModel(), &QItemSelectionModel::selectionChanged,
-            this, &AdminDashboard::onSelectionChanged);
+    connect(m_cardTable->selectionModel(), &QItemSelectionModel::selectionChanged, this,
+            &AdminDashboard::onSelectionChanged);
     connect(m_searchEdit, &ElaLineEdit::textChanged, this, &AdminDashboard::onSearchChanged);
-    
+
     // 收入日期变化
     connect(m_incomeDateEdit, &QDateEdit::dateChanged, this, &AdminDashboard::onIncomeDateChanged);
-    
+
     // 数据变更信号
     connect(m_cardManager, &CardManager::cardsChanged, this, &AdminDashboard::refreshCardList);
     connect(m_cardManager, &CardManager::cardUpdated, this, &AdminDashboard::refreshCardList);
@@ -203,11 +197,11 @@ void AdminDashboard::initConnections() {
 
 void AdminDashboard::refresh() {
     refreshCardList();
-    
+
     // 更新总卡数
     int totalCards = m_cardManager->getAllCards().size();
     m_totalCardsLabel->setText(QString::number(totalCards) + QStringLiteral(" 张"));
-    
+
     // 更新当前在线人数
     int onlineCount = 0;
     for (const auto& card : m_cardManager->getAllCards()) {
@@ -216,7 +210,7 @@ void AdminDashboard::refresh() {
         }
     }
     m_onlineCountLabel->setText(QString::number(onlineCount) + QStringLiteral(" 人"));
-    
+
     // 更新收入（根据选择的日期）
     QString selectedDate = m_incomeDateEdit->date().toString(QStringLiteral("yyyy-MM-dd"));
     double income = m_recordManager->getDailyIncome(selectedDate);
@@ -233,119 +227,119 @@ void AdminDashboard::onIncomeDateChanged() {
 void AdminDashboard::onChangeAdminPasswordClicked() {
     // 输入旧密码
     bool ok;
-    QString oldPassword = QInputDialog::getText(this,
-        QStringLiteral("修改管理员密码"),
-        QStringLiteral("请输入当前管理员密码："),
-        QLineEdit::Password, QString(), &ok);
-    
-    if (!ok) return;
-    
+    QString oldPassword = QInputDialog::getText(this, QStringLiteral("修改管理员密码"),
+                                                QStringLiteral("请输入当前管理员密码："),
+                                                QLineEdit::Password, QString(), &ok);
+
+    if (!ok)
+        return;
+
     // 验证旧密码
     QString currentPassword = StorageManager::instance().loadAdminPassword();
     if (oldPassword != currentPassword) {
-        ElaMessageBar::error(ElaMessageBarType::TopRight,
-            QStringLiteral("错误"), QStringLiteral("当前密码错误"), 2000, this);
+        ElaMessageBar::error(ElaMessageBarType::TopRight, QStringLiteral("错误"),
+                             QStringLiteral("当前密码错误"), 2000, this);
         return;
     }
-    
+
     // 输入新密码
-    QString newPassword = QInputDialog::getText(this,
-        QStringLiteral("修改管理员密码"),
-        QStringLiteral("请输入新密码（至少4位）："),
-        QLineEdit::Password, QString(), &ok);
-    
-    if (!ok || newPassword.isEmpty()) return;
-    
+    QString newPassword = QInputDialog::getText(this, QStringLiteral("修改管理员密码"),
+                                                QStringLiteral("请输入新密码（至少4位）："),
+                                                QLineEdit::Password, QString(), &ok);
+
+    if (!ok || newPassword.isEmpty())
+        return;
+
     if (newPassword.length() < 4) {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight,
-            QStringLiteral("提示"), QStringLiteral("密码长度至少4位"), 2000, this);
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, QStringLiteral("提示"),
+                               QStringLiteral("密码长度至少4位"), 2000, this);
         return;
     }
-    
+
     // 确认新密码
-    QString confirmPassword = QInputDialog::getText(this,
-        QStringLiteral("修改管理员密码"),
-        QStringLiteral("请再次输入新密码："),
-        QLineEdit::Password, QString(), &ok);
-    
-    if (!ok) return;
-    
+    QString confirmPassword = QInputDialog::getText(this, QStringLiteral("修改管理员密码"),
+                                                    QStringLiteral("请再次输入新密码："),
+                                                    QLineEdit::Password, QString(), &ok);
+
+    if (!ok)
+        return;
+
     if (newPassword != confirmPassword) {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight,
-            QStringLiteral("提示"), QStringLiteral("两次输入的密码不一致"), 2000, this);
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, QStringLiteral("提示"),
+                               QStringLiteral("两次输入的密码不一致"), 2000, this);
         return;
     }
-    
+
     // 保存新密码
     if (StorageManager::instance().saveAdminPassword(newPassword)) {
-        ElaMessageBar::success(ElaMessageBarType::TopRight,
-            QStringLiteral("成功"), QStringLiteral("管理员密码修改成功"), 2000, this);
+        ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                               QStringLiteral("管理员密码修改成功"), 2000, this);
     } else {
-        ElaMessageBar::error(ElaMessageBarType::TopRight,
-            QStringLiteral("错误"), QStringLiteral("密码保存失败"), 2000, this);
+        ElaMessageBar::error(ElaMessageBarType::TopRight, QStringLiteral("错误"),
+                             QStringLiteral("密码保存失败"), 2000, this);
     }
 }
 
 void AdminDashboard::onAddCardClicked() {
     // 输入卡号
     bool ok;
-    QString cardId = QInputDialog::getText(this,
-        QStringLiteral("添加新卡"),
-        QStringLiteral("请输入卡号："),
-        QLineEdit::Normal, QString(), &ok);
-    
-    if (!ok || cardId.isEmpty()) return;
-    
+    QString cardId =
+        QInputDialog::getText(this, QStringLiteral("添加新卡"), QStringLiteral("请输入卡号："),
+                              QLineEdit::Normal, QString(), &ok);
+
+    if (!ok || cardId.isEmpty())
+        return;
+
     // 检查卡号是否已存在
     if (m_cardManager->cardExists(cardId)) {
-        ElaMessageBar::error(ElaMessageBarType::TopRight,
-            QStringLiteral("错误"), QStringLiteral("该卡号已存在"), 2000, this);
+        ElaMessageBar::error(ElaMessageBarType::TopRight, QStringLiteral("错误"),
+                             QStringLiteral("该卡号已存在"), 2000, this);
         return;
     }
-    
+
     // 输入姓名
-    QString name = QInputDialog::getText(this,
-        QStringLiteral("添加新卡"),
-        QStringLiteral("请输入持卡人姓名："),
-        QLineEdit::Normal, QString(), &ok);
-    
-    if (!ok || name.isEmpty()) return;
-    
+    QString name = QInputDialog::getText(this, QStringLiteral("添加新卡"),
+                                         QStringLiteral("请输入持卡人姓名："), QLineEdit::Normal,
+                                         QString(), &ok);
+
+    if (!ok || name.isEmpty())
+        return;
+
     // 输入学号
-    QString studentId = QInputDialog::getText(this,
-        QStringLiteral("添加新卡"),
-        QStringLiteral("请输入学号："),
-        QLineEdit::Normal, QString(), &ok);
-    
-    if (!ok || studentId.isEmpty()) return;
-    
+    QString studentId =
+        QInputDialog::getText(this, QStringLiteral("添加新卡"), QStringLiteral("请输入学号："),
+                              QLineEdit::Normal, QString(), &ok);
+
+    if (!ok || studentId.isEmpty())
+        return;
+
     // 输入初始余额
-    double balance = QInputDialog::getDouble(this,
-        QStringLiteral("添加新卡"),
-        QStringLiteral("请输入初始余额："),
-        0.0, 0.0, 10000.0, 2, &ok);
-    
-    if (!ok) return;
-    
+    double balance =
+        QInputDialog::getDouble(this, QStringLiteral("添加新卡"),
+                                QStringLiteral("请输入初始余额："), 0.0, 0.0, 10000.0, 2, &ok);
+
+    if (!ok)
+        return;
+
     // 创建新卡
     if (m_cardManager->createCard(cardId, name, studentId, balance)) {
-        ElaMessageBar::success(ElaMessageBarType::TopRight,
-            QStringLiteral("成功"), 
-            QStringLiteral("新卡创建成功，卡号：") + cardId + QStringLiteral("，默认密码：123456"), 
-            3000, this);
+        ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                               QStringLiteral("新卡创建成功，卡号：") + cardId +
+                                   QStringLiteral("，默认密码：123456"),
+                               3000, this);
         refresh();
     } else {
-        ElaMessageBar::error(ElaMessageBarType::TopRight,
-            QStringLiteral("错误"), QStringLiteral("创建失败"), 2000, this);
+        ElaMessageBar::error(ElaMessageBarType::TopRight, QStringLiteral("错误"),
+                             QStringLiteral("创建失败"), 2000, this);
     }
 }
 
 void AdminDashboard::refreshCardList() {
     m_cardModel->removeRows(0, m_cardModel->rowCount());
-    
+
     QString searchText = m_searchEdit->text().trimmed().toLower();
     QList<Card> cards = m_cardManager->getAllCards();
-    
+
     for (const auto& card : cards) {
         // 过滤搜索
         if (!searchText.isEmpty()) {
@@ -355,7 +349,7 @@ void AdminDashboard::refreshCardList() {
                 continue;
             }
         }
-        
+
         QList<QStandardItem*> row;
         row << new QStandardItem(card.cardId());
         row << new QStandardItem(card.name());
@@ -363,7 +357,7 @@ void AdminDashboard::refreshCardList() {
         row << new QStandardItem(QString::number(card.balance(), 'f', 2));
         row << new QStandardItem(QString::number(card.totalRecharge(), 'f', 2));
         row << new QStandardItem(cardStateToString(card.state()));
-        
+
         m_cardModel->appendRow(row);
     }
 }
@@ -379,7 +373,7 @@ QString AdminDashboard::getSelectedCardId() const {
 void AdminDashboard::onSelectionChanged() {
     QString cardId = getSelectedCardId();
     bool hasSelection = !cardId.isEmpty();
-    
+
     if (hasSelection) {
         Card* card = m_cardManager->findCard(cardId);
         if (card) {
@@ -412,70 +406,74 @@ void AdminDashboard::onSearchChanged(const QString& /*text*/) {
 
 void AdminDashboard::onRechargeClicked() {
     QString cardId = getSelectedCardId();
-    if (cardId.isEmpty()) return;
-    
+    if (cardId.isEmpty())
+        return;
+
     RechargeDialog dialog(m_cardManager, cardId, this);
     if (dialog.exec() == QDialog::Accepted) {
         refresh();
-        ElaMessageBar::success(ElaMessageBarType::TopRight,
-            QStringLiteral("成功"), QStringLiteral("充值成功"), 2000, this);
+        ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                               QStringLiteral("充值成功"), 2000, this);
     }
 }
 
 void AdminDashboard::onReportLostClicked() {
     QString cardId = getSelectedCardId();
-    if (cardId.isEmpty()) return;
-    
+    if (cardId.isEmpty())
+        return;
+
     if (m_cardManager->reportCardLost(cardId)) {
         refresh();
-        ElaMessageBar::success(ElaMessageBarType::TopRight,
-            QStringLiteral("成功"), QStringLiteral("挂失成功"), 2000, this);
+        ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                               QStringLiteral("挂失成功"), 2000, this);
     }
 }
 
 void AdminDashboard::onCancelLostClicked() {
     QString cardId = getSelectedCardId();
-    if (cardId.isEmpty()) return;
-    
+    if (cardId.isEmpty())
+        return;
+
     if (m_cardManager->cancelCardLost(cardId)) {
         refresh();
-        ElaMessageBar::success(ElaMessageBarType::TopRight,
-            QStringLiteral("成功"), QStringLiteral("解挂成功"), 2000, this);
+        ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                               QStringLiteral("解挂成功"), 2000, this);
     }
 }
 
 void AdminDashboard::onUnfreezeClicked() {
     QString cardId = getSelectedCardId();
-    if (cardId.isEmpty()) return;
-    
+    if (cardId.isEmpty())
+        return;
+
     if (m_cardManager->unfreezeCard(cardId)) {
         refresh();
-        ElaMessageBar::success(ElaMessageBarType::TopRight,
-            QStringLiteral("成功"), QStringLiteral("解冻成功"), 2000, this);
+        ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                               QStringLiteral("解冻成功"), 2000, this);
     }
 }
 
 void AdminDashboard::onResetPasswordClicked() {
     QString cardId = getSelectedCardId();
-    if (cardId.isEmpty()) return;
-    
+    if (cardId.isEmpty())
+        return;
+
     bool ok;
-    QString newPassword = QInputDialog::getText(this, 
-        QStringLiteral("重置密码"),
-        QStringLiteral("请输入新密码："),
-        QLineEdit::Password, QString(), &ok);
-    
+    QString newPassword =
+        QInputDialog::getText(this, QStringLiteral("重置密码"), QStringLiteral("请输入新密码："),
+                              QLineEdit::Password, QString(), &ok);
+
     if (ok && !newPassword.isEmpty()) {
         if (m_cardManager->resetPassword(cardId, newPassword)) {
-            ElaMessageBar::success(ElaMessageBarType::TopRight,
-                QStringLiteral("成功"), QStringLiteral("密码重置成功"), 2000, this);
+            ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                                   QStringLiteral("密码重置成功"), 2000, this);
         }
     }
 }
 
 void AdminDashboard::onStatisticsClicked() {
     StatisticsWidget* statsWidget = new StatisticsWidget(m_recordManager, m_cardManager, this);
-    
+
     ElaContentDialog* dialog = new ElaContentDialog(this);
     dialog->setWindowTitle(QStringLiteral("统计报表"));
     dialog->setCentralWidget(statsWidget);
@@ -487,80 +485,80 @@ void AdminDashboard::onStatisticsClicked() {
 }
 
 void AdminDashboard::onExportClicked() {
-    QString filePath = QFileDialog::getSaveFileName(this,
-        QStringLiteral("导出数据"),
-        QStringLiteral("campus_card_data.json"),
-        QStringLiteral("JSON文件 (*.json)"));
-    
-    if (filePath.isEmpty()) return;
-    
+    QString filePath = QFileDialog::getSaveFileName(this, QStringLiteral("导出数据"),
+                                                    QStringLiteral("campus_card_data.json"),
+                                                    QStringLiteral("JSON文件 (*.json)"));
+
+    if (filePath.isEmpty())
+        return;
+
     if (StorageManager::instance().exportAllData(filePath)) {
-        ElaMessageBar::success(ElaMessageBarType::TopRight,
-            QStringLiteral("成功"), QStringLiteral("数据导出成功"), 2000, this);
+        ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                               QStringLiteral("数据导出成功"), 2000, this);
     } else {
-        ElaMessageBar::error(ElaMessageBarType::TopRight,
-            QStringLiteral("错误"), QStringLiteral("数据导出失败"), 2000, this);
+        ElaMessageBar::error(ElaMessageBarType::TopRight, QStringLiteral("错误"),
+                             QStringLiteral("数据导出失败"), 2000, this);
     }
 }
 
 void AdminDashboard::onImportClicked() {
-    QString filePath = QFileDialog::getOpenFileName(this,
-        QStringLiteral("导入数据"),
-        QString(),
-        QStringLiteral("JSON文件 (*.json)"));
-    
-    if (filePath.isEmpty()) return;
-    
+    QString filePath = QFileDialog::getOpenFileName(this, QStringLiteral("导入数据"), QString(),
+                                                    QStringLiteral("JSON文件 (*.json)"));
+
+    if (filePath.isEmpty())
+        return;
+
     // 询问导入模式
-    QMessageBox::StandardButton reply = QMessageBox::question(this,
-        QStringLiteral("导入模式"),
-        QStringLiteral("是否合并数据？\n\n选择\"是\"将保留现有数据并添加新数据\n选择\"否\"将覆盖现有数据"),
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, QStringLiteral("导入模式"),
+        QStringLiteral(
+            "是否合并数据？\n\n选择\"是\"将保留现有数据并添加新数据\n选择\"否\"将覆盖现有数据"),
         QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-    
-    if (reply == QMessageBox::Cancel) return;
-    
+
+    if (reply == QMessageBox::Cancel)
+        return;
+
     bool merge = (reply == QMessageBox::Yes);
-    
+
     if (StorageManager::instance().importData(filePath, merge)) {
         // 重新加载数据
         m_cardManager->initialize();
         m_recordManager->initialize();
         refresh();
-        
-        ElaMessageBar::success(ElaMessageBarType::TopRight,
-            QStringLiteral("成功"), QStringLiteral("数据导入成功"), 2000, this);
+
+        ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                               QStringLiteral("数据导入成功"), 2000, this);
     } else {
-        ElaMessageBar::error(ElaMessageBarType::TopRight,
-            QStringLiteral("错误"), QStringLiteral("数据导入失败"), 2000, this);
+        ElaMessageBar::error(ElaMessageBarType::TopRight, QStringLiteral("错误"),
+                             QStringLiteral("数据导入失败"), 2000, this);
     }
 }
 
 void AdminDashboard::onGenerateMockDataClicked() {
     bool ok;
-    int cardCount = QInputDialog::getInt(this,
-        QStringLiteral("生成测试数据"),
-        QStringLiteral("请输入要生成的学生卡数量："),
-        5, 1, 50, 1, &ok);
-    
-    if (!ok) return;
-    
-    int recordsPerCard = QInputDialog::getInt(this,
-        QStringLiteral("生成测试数据"),
-        QStringLiteral("请输入每张卡的上机记录数量："),
-        3, 0, 20, 1, &ok);
-    
-    if (!ok) return;
-    
+    int cardCount =
+        QInputDialog::getInt(this, QStringLiteral("生成测试数据"),
+                             QStringLiteral("请输入要生成的学生卡数量："), 5, 1, 50, 1, &ok);
+
+    if (!ok)
+        return;
+
+    int recordsPerCard =
+        QInputDialog::getInt(this, QStringLiteral("生成测试数据"),
+                             QStringLiteral("请输入每张卡的上机记录数量："), 3, 0, 20, 1, &ok);
+
+    if (!ok)
+        return;
+
     StorageManager::instance().generateMockData(cardCount, recordsPerCard);
-    
+
     // 重新加载数据
     m_cardManager->initialize();
     m_recordManager->initialize();
     refresh();
-    
-    ElaMessageBar::success(ElaMessageBarType::TopRight,
-        QStringLiteral("成功"), 
-        QStringLiteral("已生成 %1 张测试卡").arg(cardCount), 2000, this);
+
+    ElaMessageBar::success(ElaMessageBarType::TopRight, QStringLiteral("成功"),
+                           QStringLiteral("已生成 %1 张测试卡").arg(cardCount), 2000, this);
 }
 
-} // namespace CampusCard
+}  // namespace CampusCard

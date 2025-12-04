@@ -47,16 +47,16 @@ data/
 
 ### 字段说明
 
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `cardId` | string | 是 | 卡号，唯一标识 |
-| `name` | string | 是 | 持卡人姓名 |
-| `studentId` | string | 是 | 学号 |
-| `totalRecharge` | number | 是 | 累计充值金额 |
-| `balance` | number | 是 | 当前余额 |
-| `state` | number | 是 | 卡状态（见状态码） |
-| `loginAttempts` | number | 是 | 密码错误次数 |
-| `password` | string | 是 | 登录密码 |
+| 字段            | 类型   | 必填 | 说明               |
+| --------------- | ------ | ---- | ------------------ |
+| `cardId`        | string | 是   | 卡号，唯一标识     |
+| `name`          | string | 是   | 持卡人姓名         |
+| `studentId`     | string | 是   | 学号               |
+| `totalRecharge` | number | 是   | 累计充值金额       |
+| `balance`       | number | 是   | 当前余额           |
+| `state`         | number | 是   | 卡状态（见状态码） |
+| `loginAttempts` | number | 是   | 密码错误次数       |
+| `password`      | string | 是   | 登录密码           |
 
 ## admin.json
 
@@ -72,9 +72,9 @@ data/
 
 ### 字段说明
 
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `password` | string | 是 | 管理员登录密码 |
+| 字段       | 类型   | 必填 | 说明           |
+| ---------- | ------ | ---- | -------------- |
+| `password` | string | 是   | 管理员登录密码 |
 
 ## records/{cardId}.json
 
@@ -111,34 +111,34 @@ data/
 
 ### 字段说明
 
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `recordId` | string | 是 | 记录 ID（UUID） |
-| `cardId` | string | 是 | 关联卡号 |
-| `date` | string | 是 | 上机日期（yyyy-MM-dd） |
-| `startTime` | string | 是 | 开始时间（ISO 8601） |
-| `endTime` | string | 否 | 结束时间（上机中为空） |
-| `durationMinutes` | number | 是 | 上机时长（分钟） |
-| `cost` | number | 是 | 上机费用 |
-| `state` | number | 是 | 会话状态（见状态码） |
-| `location` | string | 是 | 上机地点 |
+| 字段              | 类型   | 必填 | 说明                   |
+| ----------------- | ------ | ---- | ---------------------- |
+| `recordId`        | string | 是   | 记录 ID（UUID）        |
+| `cardId`          | string | 是   | 关联卡号               |
+| `date`            | string | 是   | 上机日期（yyyy-MM-dd） |
+| `startTime`       | string | 是   | 开始时间（ISO 8601）   |
+| `endTime`         | string | 否   | 结束时间（上机中为空） |
+| `durationMinutes` | number | 是   | 上机时长（分钟）       |
+| `cost`            | number | 是   | 上机费用               |
+| `state`           | number | 是   | 会话状态（见状态码）   |
+| `location`        | string | 是   | 上机地点               |
 
 ## 状态码
 
 ### CardState - 卡状态
 
-| 值 | 枚举 | 说明 |
-|------|------|------|
-| 0 | `Normal` | 正常 |
-| 1 | `Lost` | 挂失 |
-| 2 | `Frozen` | 冻结 |
+| 值  | 枚举     | 说明 |
+| --- | -------- | ---- |
+| 0   | `Normal` | 正常 |
+| 1   | `Lost`   | 挂失 |
+| 2   | `Frozen` | 冻结 |
 
 ### SessionState - 会话状态
 
-| 值 | 枚举 | 说明 |
-|------|------|------|
-| 0 | `Offline` | 离线/已结束 |
-| 1 | `Online` | 上机中 |
+| 值  | 枚举      | 说明        |
+| --- | --------- | ----------- |
+| 0   | `Offline` | 离线/已结束 |
+| 1   | `Online`  | 上机中      |
 
 ## 导出数据格式
 
@@ -161,15 +161,15 @@ data/
 
 ### 字段说明
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `exportTime` | string | 导出时间 |
-| `version` | string | 数据格式版本 |
-| `cards` | array | 所有卡数据 |
-| `admin` | object | 管理员配置 |
-| `records` | object | 所有记录（按卡号分组） |
+| 字段         | 类型   | 说明                   |
+| ------------ | ------ | ---------------------- |
+| `exportTime` | string | 导出时间               |
+| `version`    | string | 数据格式版本           |
+| `cards`      | array  | 所有卡数据             |
+| `admin`      | object | 管理员配置             |
+| `records`    | object | 所有记录（按卡号分组） |
 
 ## 下一步
 
-- [管理器类](managers.md) - 了解业务接口
-- [信号与槽](signals-slots.md) - 了解事件通信
+-   [管理器类](managers.md) - 了解业务接口
+-   [信号与槽](signals-slots.md) - 了解事件通信

@@ -9,10 +9,7 @@
 
 namespace CampusCard {
 
-CardManager::CardManager(QObject* parent)
-    : QObject(parent)
-{
-}
+CardManager::CardManager(QObject* parent) : QObject(parent) {}
 
 void CardManager::initialize() {
     // 从存储加载所有卡数据
@@ -53,17 +50,17 @@ bool CardManager::cardExists(const QString& cardId) const {
     return m_cards.contains(cardId);
 }
 
-bool CardManager::createCard(const QString& cardId, const QString& name,
-                             const QString& studentId, double initialBalance) {
+bool CardManager::createCard(const QString& cardId, const QString& name, const QString& studentId,
+                             double initialBalance) {
     // 检查卡号是否已存在
     if (cardExists(cardId)) {
         return false;
     }
-    
+
     // 创建新卡并添加到映射
     Card newCard(cardId, name, studentId, initialBalance);
     m_cards[cardId] = newCard;
-    
+
     // 保存并发出信号
     saveAll();
     emit cardsChanged();
@@ -75,7 +72,7 @@ bool CardManager::rechargeCard(const QString& cardId, double amount) {
     if (!card) {
         return false;
     }
-    
+
     // 执行充值
     if (card->recharge(amount)) {
         saveAll();
@@ -90,12 +87,12 @@ bool CardManager::deductFromCard(const QString& cardId, double amount) {
     if (!card) {
         return false;
     }
-    
+
     // 检查卡是否可用
     if (!card->isUsable()) {
         return false;
     }
-    
+
     // 执行扣款
     if (card->deduct(amount)) {
         saveAll();
@@ -110,7 +107,7 @@ bool CardManager::reportCardLost(const QString& cardId) {
     if (!card) {
         return false;
     }
-    
+
     card->reportLost();
     saveAll();
     emit cardUpdated(cardId);
@@ -122,7 +119,7 @@ bool CardManager::cancelCardLost(const QString& cardId) {
     if (!card) {
         return false;
     }
-    
+
     card->cancelLost();
     saveAll();
     emit cardUpdated(cardId);
@@ -134,7 +131,7 @@ bool CardManager::freezeCard(const QString& cardId) {
     if (!card) {
         return false;
     }
-    
+
     card->freeze();
     saveAll();
     emit cardUpdated(cardId);
@@ -146,7 +143,7 @@ bool CardManager::unfreezeCard(const QString& cardId) {
     if (!card) {
         return false;
     }
-    
+
     card->unfreeze();
     saveAll();
     emit cardUpdated(cardId);
@@ -158,16 +155,16 @@ bool CardManager::resetPassword(const QString& cardId, const QString& newPasswor
     if (!card) {
         return false;
     }
-    
+
     // 设置新密码并重置登录失败计数
     card->setPassword(newPassword);
     card->resetLoginAttempts();
-    
+
     // 如果卡被冻结，自动解冻
     if (card->state() == CardState::Frozen) {
         card->unfreeze();
     }
-    
+
     saveAll();
     emit cardUpdated(cardId);
     return true;
@@ -177,11 +174,11 @@ bool CardManager::updateCard(const Card& card) {
     if (!cardExists(card.cardId())) {
         return false;
     }
-    
+
     m_cards[card.cardId()] = card;
     saveAll();
     emit cardUpdated(card.cardId());
     return true;
 }
 
-} // namespace CampusCard
+}  // namespace CampusCard

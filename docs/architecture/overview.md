@@ -14,18 +14,18 @@ graph TB
         AD[AdminDashboard]
         SD[StudentDashboard]
     end
-    
+
     subgraph BL["业务逻辑层"]
         AM[AuthManager]
         CM[CardManager]
         RM[RecordManager]
     end
-    
+
     subgraph DA["数据持久层"]
         SM[StorageManager]
         JSON[(JSON Files)]
     end
-    
+
     UI --> BL
     BL --> DA
     SM --> JSON
@@ -37,33 +37,33 @@ graph TB
 
 负责用户界面展示和用户交互。
 
-| 组件 | 职责 |
-|------|------|
-| `MainWindow` | 主窗口框架，导航管理 |
-| `LoginDialog` | 登录认证界面 |
-| `RegisterDialog` | 新卡注册界面 |
-| `AdminDashboard` | 管理员控制面板 |
-| `StudentDashboard` | 学生操作面板 |
-| `RechargeDialog` | 充值对话框 |
-| `StatisticsWidget` | 统计报表组件 |
-| `RecordTableWidget` | 记录表格组件 |
+| 组件                | 职责                 |
+| ------------------- | -------------------- |
+| `MainWindow`        | 主窗口框架，导航管理 |
+| `LoginDialog`       | 登录认证界面         |
+| `RegisterDialog`    | 新卡注册界面         |
+| `AdminDashboard`    | 管理员控制面板       |
+| `StudentDashboard`  | 学生操作面板         |
+| `RechargeDialog`    | 充值对话框           |
+| `StatisticsWidget`  | 统计报表组件         |
+| `RecordTableWidget` | 记录表格组件         |
 
 ### 业务逻辑层（Business Logic Layer）
 
 封装核心业务规则和流程控制。
 
-| 组件 | 职责 |
-|------|------|
-| `AuthManager` | 用户认证、登录状态管理 |
-| `CardManager` | 卡片 CRUD、状态管理 |
-| `RecordManager` | 上机会话、记录统计 |
+| 组件            | 职责                   |
+| --------------- | ---------------------- |
+| `AuthManager`   | 用户认证、登录状态管理 |
+| `CardManager`   | 卡片 CRUD、状态管理    |
+| `RecordManager` | 上机会话、记录统计     |
 
 ### 数据持久层（Data Access Layer）
 
 负责数据的存储和读取。
 
-| 组件 | 职责 |
-|------|------|
+| 组件             | 职责                        |
+| ---------------- | --------------------------- |
 | `StorageManager` | JSON 文件读写、数据导入导出 |
 
 ## 设计模式
@@ -79,7 +79,7 @@ public:
         static StorageManager instance;
         return instance;
     }
-    
+
 private:
     StorageManager() = default;
     StorageManager(const StorageManager&) = delete;
@@ -97,7 +97,7 @@ sequenceDiagram
     participant CardManager
     participant AdminDashboard
     participant StorageManager
-    
+
     User->>CardManager: rechargeCard()
     CardManager->>CardManager: 更新余额
     CardManager->>StorageManager: saveAllCards()
@@ -112,7 +112,7 @@ Manager 类通过构造函数注入依赖，便于测试和扩展。
 ```cpp
 class AuthManager : public QObject {
 public:
-    explicit AuthManager(CardManager* cardManager, 
+    explicit AuthManager(CardManager* cardManager,
                          QObject* parent = nullptr);
 };
 ```
@@ -176,13 +176,13 @@ src/
 
 ## 技术选型
 
-| 技术 | 选择 | 理由 |
-|------|------|------|
-| **语言** | C++20 | 现代特性、类型安全 |
-| **GUI** | Qt6 | 跨平台、成熟稳定 |
+| 技术        | 选择           | 理由                    |
+| ----------- | -------------- | ----------------------- |
+| **语言**    | C++20          | 现代特性、类型安全      |
+| **GUI**     | Qt6            | 跨平台、成熟稳定        |
 | **UI 组件** | ElaWidgetTools | Fluent Design、美观现代 |
-| **存储** | JSON | 轻量级、易于调试 |
-| **构建** | CMake | 跨平台、标准化 |
+| **存储**    | JSON           | 轻量级、易于调试        |
+| **构建**    | CMake          | 跨平台、标准化          |
 
 ## 扩展性设计
 
@@ -195,5 +195,5 @@ src/
 
 ## 下一步
 
-- [核心模块](core-modules.md) - 详细了解核心类
-- [UI 组件](ui-components.md) - 了解界面组件
+-   [核心模块](core-modules.md) - 详细了解核心类
+-   [UI 组件](ui-components.md) - 了解界面组件

@@ -43,3 +43,5 @@ data/records/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+.cache/

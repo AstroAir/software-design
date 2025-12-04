@@ -8,9 +8,11 @@
 #ifndef STUDENTDASHBOARD_H
 #define STUDENTDASHBOARD_H
 
-#include <QWidget>
 #include "core/CardManager.h"
 #include "core/RecordManager.h"
+
+#include <QWidget>
+
 
 class ElaText;
 class ElaPushButton;
@@ -36,8 +38,7 @@ public:
      * @param recordManager 记录管理器
      * @param parent 父窗口
      */
-    explicit StudentDashboard(CardManager* cardManager,
-                              RecordManager* recordManager,
+    explicit StudentDashboard(CardManager* cardManager, RecordManager* recordManager,
                               QWidget* parent = nullptr);
 
     /**
@@ -99,9 +100,9 @@ private:
      */
     void updateLocationFilter();
 
-    CardManager* m_cardManager;         ///< 卡管理器
-    RecordManager* m_recordManager;     ///< 记录管理器
-    QString m_currentCardId;            ///< 当前卡号
+    CardManager* m_cardManager;      ///< 卡管理器
+    RecordManager* m_recordManager;  ///< 记录管理器
+    QString m_currentCardId;         ///< 当前卡号
 
     /**
      * @brief 处理日期筛选变化
@@ -114,32 +115,32 @@ private:
     void onChangePasswordClicked();
 
     // UI组件
-    ElaText* m_nameLabel;               ///< 姓名标签
-    ElaText* m_studentIdLabel;          ///< 学号标签
-    ElaText* m_balanceLabel;            ///< 余额标签
-    ElaText* m_statusLabel;             ///< 状态标签
-    ElaText* m_sessionLabel;            ///< 上机状态标签
-    ElaText* m_sessionTimeLabel;        ///< 上机时间标签
-    ElaText* m_sessionLocationLabel;    ///< 上机地点标签
-    
+    ElaText* m_nameLabel;             ///< 姓名标签
+    ElaText* m_studentIdLabel;        ///< 学号标签
+    ElaText* m_balanceLabel;          ///< 余额标签
+    ElaText* m_statusLabel;           ///< 状态标签
+    ElaText* m_sessionLabel;          ///< 上机状态标签
+    ElaText* m_sessionTimeLabel;      ///< 上机时间标签
+    ElaText* m_sessionLocationLabel;  ///< 上机地点标签
+
     // 统计信息标签
-    ElaText* m_totalSessionsLabel;      ///< 总上机次数标签
-    ElaText* m_totalDurationLabel;      ///< 总时长标签
-    ElaText* m_totalCostLabel;          ///< 总费用标签
-    
+    ElaText* m_totalSessionsLabel;  ///< 总上机次数标签
+    ElaText* m_totalDurationLabel;  ///< 总时长标签
+    ElaText* m_totalCostLabel;      ///< 总费用标签
+
     // 日期筛选
-    QDateEdit* m_startDateEdit;         ///< 开始日期选择
-    QDateEdit* m_endDateEdit;           ///< 结束日期选择
-    ElaComboBox* m_locationFilter;      ///< 地点筛选下拉框
-    
-    ElaPushButton* m_startSessionBtn;   ///< 开始上机按钮
-    ElaPushButton* m_endSessionBtn;     ///< 结束上机按钮
-    ElaPushButton* m_changePasswordBtn; ///< 修改密码按钮
-    ElaPushButton* m_logoutBtn;         ///< 登出按钮
-    
-    RecordTableWidget* m_recordTable;   ///< 上机记录表格
+    QDateEdit* m_startDateEdit;     ///< 开始日期选择
+    QDateEdit* m_endDateEdit;       ///< 结束日期选择
+    ElaComboBox* m_locationFilter;  ///< 地点筛选下拉框
+
+    ElaPushButton* m_startSessionBtn;    ///< 开始上机按钮
+    ElaPushButton* m_endSessionBtn;      ///< 结束上机按钮
+    ElaPushButton* m_changePasswordBtn;  ///< 修改密码按钮
+    ElaPushButton* m_logoutBtn;          ///< 登出按钮
+
+    RecordTableWidget* m_recordTable;  ///< 上机记录表格
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // STUDENTDASHBOARD_H
+#endif  // STUDENTDASHBOARD_H

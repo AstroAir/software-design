@@ -8,9 +8,11 @@
 #ifndef STATISTICSWIDGET_H
 #define STATISTICSWIDGET_H
 
-#include <QWidget>
-#include "core/RecordManager.h"
 #include "core/CardManager.h"
+#include "core/RecordManager.h"
+
+#include <QWidget>
+
 
 class ElaText;
 class ElaTableView;
@@ -33,8 +35,7 @@ public:
      * @param cardManager 卡管理器
      * @param parent 父窗口
      */
-    explicit StatisticsWidget(RecordManager* recordManager,
-                              CardManager* cardManager,
+    explicit StatisticsWidget(RecordManager* recordManager, CardManager* cardManager,
                               QWidget* parent = nullptr);
 
 private slots:
@@ -54,17 +55,17 @@ private:
      */
     void refreshStatistics();
 
-    RecordManager* m_recordManager;     ///< 记录管理器
-    CardManager* m_cardManager;         ///< 卡管理器
+    RecordManager* m_recordManager;  ///< 记录管理器
+    CardManager* m_cardManager;      ///< 卡管理器
 
-    QDateEdit* m_dateEdit;              ///< 日期选择
-    ElaText* m_incomeLabel;             ///< 收入标签
-    ElaText* m_sessionCountLabel;       ///< 上机次数标签
-    ElaText* m_totalDurationLabel;      ///< 总时长标签
-    ElaTableView* m_detailTable;        ///< 详细记录表格
-    QStandardItemModel* m_model;        ///< 数据模型
+    QDateEdit* m_dateEdit;          ///< 日期选择
+    ElaText* m_incomeLabel;         ///< 收入标签
+    ElaText* m_sessionCountLabel;   ///< 上机次数标签
+    ElaText* m_totalDurationLabel;  ///< 总时长标签
+    ElaTableView* m_detailTable;    ///< 详细记录表格
+    QStandardItemModel* m_model;    ///< 数据模型
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // STATISTICSWIDGET_H
+#endif  // STATISTICSWIDGET_H

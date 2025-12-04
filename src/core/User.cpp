@@ -10,11 +10,7 @@
 namespace CampusCard {
 
 User::User(const QString& userId, UserRole role, const QString& cardId)
-    : m_userId(userId)
-    , m_role(role)
-    , m_cardId(cardId)
-{
-}
+    : m_userId(userId), m_role(role), m_cardId(cardId) {}
 
 User User::fromJson(const QJsonObject& json) {
     User user;
@@ -32,4 +28,4 @@ QJsonObject User::toJson() const {
     return json;
 }
 
-} // namespace CampusCard
+}  // namespace CampusCard

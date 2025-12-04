@@ -54,17 +54,17 @@ private:
      */
     QString generateCardId();
 
-    CardManager* m_cardManager;     ///< 卡管理器
+    CardManager* m_cardManager;  ///< 卡管理器
 
-    ElaLineEdit* m_cardIdEdit;      ///< 卡号输入框
-    ElaLineEdit* m_nameEdit;        ///< 姓名输入框
-    ElaLineEdit* m_studentIdEdit;   ///< 学号输入框
-    ElaLineEdit* m_passwordEdit;    ///< 密码输入框
-    ElaLineEdit* m_confirmPwdEdit;  ///< 确认密码输入框
-    ElaPushButton* m_registerBtn;   ///< 注册按钮
-    ElaPushButton* m_generateIdBtn; ///< 生成卡号按钮
+    ElaLineEdit* m_cardIdEdit;       ///< 卡号输入框
+    ElaLineEdit* m_nameEdit;         ///< 姓名输入框
+    ElaLineEdit* m_studentIdEdit;    ///< 学号输入框
+    ElaLineEdit* m_passwordEdit;     ///< 密码输入框
+    ElaLineEdit* m_confirmPwdEdit;   ///< 确认密码输入框
+    ElaPushButton* m_registerBtn;    ///< 注册按钮
+    ElaPushButton* m_generateIdBtn;  ///< 生成卡号按钮
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // REGISTERDIALOG_H
+#endif  // REGISTERDIALOG_H

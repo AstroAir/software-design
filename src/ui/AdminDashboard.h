@@ -8,10 +8,12 @@
 #ifndef ADMINDASHBOARD_H
 #define ADMINDASHBOARD_H
 
-#include <QWidget>
-#include <QStandardItemModel>
 #include "core/CardManager.h"
 #include "core/RecordManager.h"
+
+#include <QStandardItemModel>
+#include <QWidget>
+
 
 class ElaTableView;
 class ElaPushButton;
@@ -35,9 +37,8 @@ public:
      * @param recordManager 记录管理器
      * @param parent 父窗口
      */
-    explicit AdminDashboard(CardManager* cardManager, 
-                           RecordManager* recordManager,
-                           QWidget* parent = nullptr);
+    explicit AdminDashboard(CardManager* cardManager, RecordManager* recordManager,
+                            QWidget* parent = nullptr);
 
     /**
      * @brief 刷新数据
@@ -143,31 +144,31 @@ private:
      */
     QString getSelectedCardId() const;
 
-    CardManager* m_cardManager;         ///< 卡管理器
-    RecordManager* m_recordManager;     ///< 记录管理器
+    CardManager* m_cardManager;      ///< 卡管理器
+    RecordManager* m_recordManager;  ///< 记录管理器
 
-    ElaTableView* m_cardTable;          ///< 卡列表表格
-    ElaLineEdit* m_searchEdit;          ///< 搜索框
-    ElaPushButton* m_rechargeBtn;       ///< 充值按钮
-    ElaPushButton* m_reportLostBtn;     ///< 挂失按钮
-    ElaPushButton* m_cancelLostBtn;     ///< 解挂按钮
-    ElaPushButton* m_unfreezeBtn;       ///< 解冻按钮
-    ElaPushButton* m_resetPwdBtn;       ///< 重置密码按钮
-    ElaPushButton* m_statisticsBtn;     ///< 统计按钮
-    ElaPushButton* m_exportBtn;         ///< 导出按钮
-    ElaPushButton* m_importBtn;         ///< 导入按钮
-    ElaPushButton* m_mockDataBtn;       ///< 生成模拟数据按钮
-    ElaPushButton* m_logoutBtn;         ///< 退出登录按钮
-    ElaPushButton* m_changeAdminPwdBtn; ///< 修改管理员密码按钮
-    ElaPushButton* m_addCardBtn;        ///< 添加新卡按钮
-    ElaText* m_incomeLabel;             ///< 当日收入标签
-    ElaText* m_totalCardsLabel;         ///< 总卡数标签
-    ElaText* m_onlineCountLabel;        ///< 当前在线人数标签
-    QDateEdit* m_incomeDateEdit;        ///< 收入日期选择
+    ElaTableView* m_cardTable;           ///< 卡列表表格
+    ElaLineEdit* m_searchEdit;           ///< 搜索框
+    ElaPushButton* m_rechargeBtn;        ///< 充值按钮
+    ElaPushButton* m_reportLostBtn;      ///< 挂失按钮
+    ElaPushButton* m_cancelLostBtn;      ///< 解挂按钮
+    ElaPushButton* m_unfreezeBtn;        ///< 解冻按钮
+    ElaPushButton* m_resetPwdBtn;        ///< 重置密码按钮
+    ElaPushButton* m_statisticsBtn;      ///< 统计按钮
+    ElaPushButton* m_exportBtn;          ///< 导出按钮
+    ElaPushButton* m_importBtn;          ///< 导入按钮
+    ElaPushButton* m_mockDataBtn;        ///< 生成模拟数据按钮
+    ElaPushButton* m_logoutBtn;          ///< 退出登录按钮
+    ElaPushButton* m_changeAdminPwdBtn;  ///< 修改管理员密码按钮
+    ElaPushButton* m_addCardBtn;         ///< 添加新卡按钮
+    ElaText* m_incomeLabel;              ///< 当日收入标签
+    ElaText* m_totalCardsLabel;          ///< 总卡数标签
+    ElaText* m_onlineCountLabel;         ///< 当前在线人数标签
+    QDateEdit* m_incomeDateEdit;         ///< 收入日期选择
 
-    QStandardItemModel* m_cardModel;    ///< 卡数据模型
+    QStandardItemModel* m_cardModel;  ///< 卡数据模型
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // ADMINDASHBOARD_H
+#endif  // ADMINDASHBOARD_H

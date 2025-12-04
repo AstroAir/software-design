@@ -6,22 +6,19 @@
  */
 
 #include "Card.h"
+
 #include <QJsonObject>
+
 
 namespace CampusCard {
 
-Card::Card(const QString& cardId, const QString& name, 
-           const QString& studentId, double balance)
-    : m_cardId(cardId)
-    , m_name(name)
-    , m_studentId(studentId)
-    , m_balance(balance)
-    , m_totalRecharge(balance)  // 初始余额视为首次充值
-    , m_state(CardState::Normal)
-    , m_loginAttempts(0)
-    , m_password(QStringLiteral("123456"))  // 默认密码
-{
-}
+Card::Card(const QString& cardId, const QString& name, const QString& studentId, double balance)
+    : m_cardId(cardId), m_name(name), m_studentId(studentId), m_balance(balance),
+      m_totalRecharge(balance)  // 初始余额视为首次充值
+      ,
+      m_state(CardState::Normal), m_loginAttempts(0),
+      m_password(QStringLiteral("123456"))  // 默认密码
+{}
 
 Card Card::fromJson(const QJsonObject& json) {
     Card card;
@@ -107,4 +104,4 @@ bool Card::isUsable() const {
     return m_state == CardState::Normal;
 }
 
-} // namespace CampusCard
+}  // namespace CampusCard

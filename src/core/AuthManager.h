@@ -8,13 +8,16 @@
 #ifndef AUTHMANAGER_H
 #define AUTHMANAGER_H
 
-#include "Types.h"
-#include "User.h"
 #include "CardManager.h"
 #include "StorageManager.h"
+#include "Types.h"
+#include "User.h"
+
 #include <QObject>
 #include <QString>
+
 #include <optional>
+
 
 namespace CampusCard {
 
@@ -30,12 +33,12 @@ public:
      * @brief 登录结果枚举
      */
     enum class LoginResult {
-        Success,            ///< 登录成功
-        InvalidCredentials, ///< 密码错误
-        CardNotFound,       ///< 卡号不存在
-        CardLost,           ///< 卡已挂失
-        CardFrozen,         ///< 卡已冻结
-        AlreadyLoggedIn     ///< 已经登录
+        Success,             ///< 登录成功
+        InvalidCredentials,  ///< 密码错误
+        CardNotFound,        ///< 卡号不存在
+        CardLost,            ///< 卡已挂失
+        CardFrozen,          ///< 卡已冻结
+        AlreadyLoggedIn      ///< 已经登录
     };
 
     /**
@@ -124,12 +127,12 @@ signals:
     void loggedOut();
 
 private:
-    CardManager* m_cardManager;     ///< 卡管理器指针
-    bool m_isLoggedIn = false;      ///< 是否已登录
+    CardManager* m_cardManager;                  ///< 卡管理器指针
+    bool m_isLoggedIn = false;                   ///< 是否已登录
     UserRole m_currentRole = UserRole::Student;  ///< 当前角色
-    QString m_currentCardId;        ///< 当前登录的卡号
+    QString m_currentCardId;                     ///< 当前登录的卡号
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // AUTHMANAGER_H
+#endif  // AUTHMANAGER_H

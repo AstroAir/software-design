@@ -9,16 +9,18 @@
 #define RECORD_H
 
 #include "Types.h"
-#include <QString>
+
 #include <QDateTime>
 #include <QJsonObject>
+#include <QString>
+
 
 namespace CampusCard {
 
 /**
  * @class Record
  * @brief 上机记录实体类
- * 
+ *
  * 存储单次上机的详细信息：时间、地点、时长、费用等
  */
 class Record {
@@ -111,8 +113,8 @@ public:
      * @brief 设置开始时间
      * @param time 开始时间
      */
-    void setStartTime(const QDateTime& time) { 
-        m_startTime = time; 
+    void setStartTime(const QDateTime& time) {
+        m_startTime = time;
         m_date = time.date().toString(QStringLiteral("yyyy-MM-dd"));
     }
 
@@ -162,17 +164,17 @@ public:
     [[nodiscard]] bool isOnline() const { return m_state == SessionState::Online; }
 
 private:
-    QString m_recordId;             ///< 记录唯一ID（UUID）
-    QString m_cardId;               ///< 关联卡号
-    QString m_date;                 ///< 上机日期（yyyy-MM-dd）
-    QDateTime m_startTime;          ///< 开始时间
-    QDateTime m_endTime;            ///< 结束时间
-    int m_durationMinutes = 0;      ///< 上机时长（分钟）
-    double m_cost = 0.0;            ///< 上机费用
+    QString m_recordId;                            ///< 记录唯一ID（UUID）
+    QString m_cardId;                              ///< 关联卡号
+    QString m_date;                                ///< 上机日期（yyyy-MM-dd）
+    QDateTime m_startTime;                         ///< 开始时间
+    QDateTime m_endTime;                           ///< 结束时间
+    int m_durationMinutes = 0;                     ///< 上机时长（分钟）
+    double m_cost = 0.0;                           ///< 上机费用
     SessionState m_state = SessionState::Offline;  ///< 上机状态
-    QString m_location;             ///< 上机地点
+    QString m_location;                            ///< 上机地点
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // RECORD_H
+#endif  // RECORD_H

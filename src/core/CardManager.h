@@ -10,16 +10,18 @@
 
 #include "Card.h"
 #include "StorageManager.h"
-#include <QObject>
+
 #include <QList>
 #include <QMap>
+#include <QObject>
+
 
 namespace CampusCard {
 
 /**
  * @class CardManager
  * @brief 校园卡管理器，提供卡的CRUD和业务操作
- * 
+ *
  * 继承QObject以支持信号槽机制
  */
 class CardManager : public QObject {
@@ -82,8 +84,8 @@ public:
      * @param initialBalance 初始余额
      * @return 是否成功
      */
-    bool createCard(const QString& cardId, const QString& name,
-                    const QString& studentId, double initialBalance = 0.0);
+    bool createCard(const QString& cardId, const QString& name, const QString& studentId,
+                    double initialBalance = 0.0);
 
     /**
      * @brief 充值
@@ -160,6 +162,6 @@ private:
     QMap<QString, Card> m_cards;  ///< 卡号到卡对象的映射
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // CARDMANAGER_H
+#endif  // CARDMANAGER_H

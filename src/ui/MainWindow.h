@@ -9,12 +9,13 @@
 #define MAINWINDOW_H
 
 #include "ElaWindow.h"
-#include "core/Types.h"
+#include "core/AuthManager.h"
 #include "core/CardManager.h"
 #include "core/RecordManager.h"
-#include "core/AuthManager.h"
+#include "core/Types.h"
 
 #include <QMap>
+
 
 class ElaContentDialog;
 class ElaSuggestBox;
@@ -28,7 +29,7 @@ class StudentDashboard;
 /**
  * @class MainWindow
  * @brief 应用程序主窗口，使用ElaWindow作为基类
- * 
+ *
  * 负责整体界面布局、导航和子模块管理
  */
 class MainWindow : public ElaWindow {
@@ -101,37 +102,37 @@ private:
     void showWelcomePage();
 
     // ========== 管理器 ==========
-    CardManager* m_cardManager = nullptr;       ///< 卡管理器
-    RecordManager* m_recordManager = nullptr;   ///< 记录管理器
-    AuthManager* m_authManager = nullptr;       ///< 认证管理器
+    CardManager* m_cardManager = nullptr;      ///< 卡管理器
+    RecordManager* m_recordManager = nullptr;  ///< 记录管理器
+    AuthManager* m_authManager = nullptr;      ///< 认证管理器
 
     // ========== UI组件 ==========
-    LoginDialog* m_loginDialog = nullptr;           ///< 登录对话框
-    AdminDashboard* m_adminDashboard = nullptr;     ///< 管理员界面
-    StudentDashboard* m_studentDashboard = nullptr; ///< 学生界面
-    QWidget* m_welcomePage = nullptr;               ///< 欢迎页面
-    
-    QString m_homeKey;          ///< 主页导航键
-    QString m_adminKey;         ///< 管理员导航键
-    QString m_studentKey;       ///< 学生导航键
-    QString m_loginFooterKey;   ///< 登录页脚导航键
-    QString m_aboutFooterKey;   ///< 关于页脚导航键
-    
+    LoginDialog* m_loginDialog = nullptr;            ///< 登录对话框
+    AdminDashboard* m_adminDashboard = nullptr;      ///< 管理员界面
+    StudentDashboard* m_studentDashboard = nullptr;  ///< 学生界面
+    QWidget* m_welcomePage = nullptr;                ///< 欢迎页面
+
+    QString m_homeKey;         ///< 主页导航键
+    QString m_adminKey;        ///< 管理员导航键
+    QString m_studentKey;      ///< 学生导航键
+    QString m_loginFooterKey;  ///< 登录页脚导航键
+    QString m_aboutFooterKey;  ///< 关于页脚导航键
+
     // ========== 搜索建议 ==========
-    ElaSuggestBox* m_suggestBox = nullptr;              ///< 搜索建议框
-    QMap<QString, QString> m_suggestionKeys;            ///< 建议项key映射 (pageKey -> suggestionKey)
-    
+    ElaSuggestBox* m_suggestBox = nullptr;    ///< 搜索建议框
+    QMap<QString, QString> m_suggestionKeys;  ///< 建议项key映射 (pageKey -> suggestionKey)
+
     /**
      * @brief 初始化搜索建议框
      */
     void initSuggestBox();
-    
+
     /**
      * @brief 更新搜索建议（登录/登出后调用）
      */
     void updateSuggestions();
 };
 
-} // namespace CampusCard
+}  // namespace CampusCard
 
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

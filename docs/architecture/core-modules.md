@@ -34,11 +34,11 @@ enum class SessionState {
 
 ### 全局常量
 
-| 常量 | 值 | 说明 |
-|------|------|------|
-| `COST_PER_HOUR` | 1.0 | 每小时费用（元） |
-| `DEFAULT_ADMIN_PASSWORD` | "admin123" | 默认管理员密码 |
-| `MAX_LOGIN_ATTEMPTS` | 3 | 最大登录尝试次数 |
+| 常量                     | 值         | 说明             |
+| ------------------------ | ---------- | ---------------- |
+| `COST_PER_HOUR`          | 1.0        | 每小时费用（元） |
+| `DEFAULT_ADMIN_PASSWORD` | "admin123" | 默认管理员密码   |
+| `MAX_LOGIN_ATTEMPTS`     | 3          | 最大登录尝试次数 |
 
 ## Card 类
 
@@ -46,16 +46,16 @@ enum class SessionState {
 
 ### 属性
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `m_cardId` | `QString` | 卡号（唯一标识） |
-| `m_name` | `QString` | 持卡人姓名 |
-| `m_studentId` | `QString` | 学号 |
-| `m_totalRecharge` | `double` | 累计充值金额 |
-| `m_balance` | `double` | 当前余额 |
-| `m_state` | `CardState` | 卡状态 |
-| `m_loginAttempts` | `int` | 密码错误次数 |
-| `m_password` | `QString` | 登录密码 |
+| 属性              | 类型        | 说明             |
+| ----------------- | ----------- | ---------------- |
+| `m_cardId`        | `QString`   | 卡号（唯一标识） |
+| `m_name`          | `QString`   | 持卡人姓名       |
+| `m_studentId`     | `QString`   | 学号             |
+| `m_totalRecharge` | `double`    | 累计充值金额     |
+| `m_balance`       | `double`    | 当前余额         |
+| `m_state`         | `CardState` | 卡状态           |
+| `m_loginAttempts` | `int`       | 密码错误次数     |
+| `m_password`      | `QString`   | 登录密码         |
 
 ### 主要方法
 
@@ -91,23 +91,23 @@ static Card fromJson(const QJsonObject& json);
 
 ### 属性
 
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `m_recordId` | `QString` | 记录 ID（UUID） |
-| `m_cardId` | `QString` | 关联卡号 |
-| `m_date` | `QString` | 上机日期 |
-| `m_startTime` | `QDateTime` | 开始时间 |
-| `m_endTime` | `QDateTime` | 结束时间 |
-| `m_durationMinutes` | `int` | 上机时长（分钟） |
-| `m_cost` | `double` | 上机费用 |
-| `m_state` | `SessionState` | 会话状态 |
-| `m_location` | `QString` | 上机地点 |
+| 属性                | 类型           | 说明             |
+| ------------------- | -------------- | ---------------- |
+| `m_recordId`        | `QString`      | 记录 ID（UUID）  |
+| `m_cardId`          | `QString`      | 关联卡号         |
+| `m_date`            | `QString`      | 上机日期         |
+| `m_startTime`       | `QDateTime`    | 开始时间         |
+| `m_endTime`         | `QDateTime`    | 结束时间         |
+| `m_durationMinutes` | `int`          | 上机时长（分钟） |
+| `m_cost`            | `double`       | 上机费用         |
+| `m_state`           | `SessionState` | 会话状态         |
+| `m_location`        | `QString`      | 上机地点         |
 
 ### 主要方法
 
 ```cpp
 // 创建新记录
-static Record createNew(const QString& cardId, 
+static Record createNew(const QString& cardId,
                         const QString& location);
 
 // 结束会话
@@ -127,10 +127,10 @@ double Record::calculateCurrentCost() const {
     if (m_state == SessionState::Offline) {
         return m_cost;
     }
-    
+
     int minutes = m_startTime.secsTo(QDateTime::currentDateTime()) / 60;
     if (minutes < 1) minutes = 1;  // 最少 1 分钟
-    
+
     return std::ceil(minutes) * (COST_PER_HOUR / 60.0);
 }
 ```
@@ -156,7 +156,7 @@ enum class LoginResult {
 
 ```cpp
 // 学生登录
-LoginResult studentLogin(const QString& cardId, 
+LoginResult studentLogin(const QString& cardId,
                          const QString& password);
 
 // 管理员登录
@@ -269,8 +269,8 @@ double endSession(const QString& cardId);  // 返回费用
 [[nodiscard]] QList<Record> getRecordsByDate(
     const QString& cardId, const QString& date) const;
 [[nodiscard]] QList<Record> getRecordsByDateRange(
-    const QString& cardId, 
-    const QString& startDate, 
+    const QString& cardId,
+    const QString& startDate,
     const QString& endDate) const;
 
 // 统计
@@ -337,5 +337,5 @@ bool importData(const QString& filePath, bool merge = false);
 
 ## 下一步
 
-- [UI 组件](ui-components.md) - 了解界面组件
-- [数据模型](../api/data-models.md) - 查看 JSON 格式
+-   [UI 组件](ui-components.md) - 了解界面组件
+-   [数据模型](../api/data-models.md) - 查看 JSON 格式

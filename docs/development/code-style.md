@@ -110,9 +110,9 @@ if (condition)
 
 ### 空行
 
-- 函数之间空一行
-- 逻辑块之间空一行
-- 类成员分组之间空一行
+-   函数之间空一行
+-   逻辑块之间空一行
+-   类成员分组之间空一行
 
 ## 注释规范
 
@@ -133,7 +133,7 @@ if (condition)
 /**
  * @class CardManager
  * @brief 管理所有校园卡的增删改查操作
- * 
+ *
  * CardManager 负责卡片的生命周期管理，包括创建、查询、
  * 充值、挂失、冻结等操作。
  */
@@ -180,8 +180,8 @@ private:
 
 ### 使用 `const` 正确性
 
-- 不修改对象的成员函数标记为 `const`
-- 不修改的参数使用 `const` 引用
+-   不修改对象的成员函数标记为 `const`
+-   不修改的参数使用 `const` 引用
 
 ```cpp
 [[nodiscard]] QString cardId() const { return m_cardId; }
@@ -228,11 +228,11 @@ class Card : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString cardId READ cardId CONSTANT)
     Q_PROPERTY(double balance READ balance NOTIFY balanceChanged)
-    
+
 public:
     QString cardId() const { return m_cardId; }
     double balance() const { return m_balance; }
-    
+
 signals:
     void balanceChanged();
 };
@@ -325,4 +325,4 @@ namespace CampusCard {
 
 ## 下一步
 
-- [贡献指南](contributing.md) - 参与项目开发
+-   [贡献指南](contributing.md) - 参与项目开发

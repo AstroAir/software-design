@@ -6,7 +6,9 @@
  */
 
 #include "Record.h"
+
 #include <QUuid>
+
 
 namespace CampusCard {
 
@@ -29,10 +31,10 @@ Record Record::fromJson(const QJsonObject& json) {
     record.m_recordId = json[QStringLiteral("recordId")].toString();
     record.m_cardId = json[QStringLiteral("cardId")].toString();
     record.m_date = json[QStringLiteral("date")].toString();
-    record.m_startTime = QDateTime::fromString(
-        json[QStringLiteral("startTime")].toString(), Qt::ISODate);
-    record.m_endTime = QDateTime::fromString(
-        json[QStringLiteral("endTime")].toString(), Qt::ISODate);
+    record.m_startTime =
+        QDateTime::fromString(json[QStringLiteral("startTime")].toString(), Qt::ISODate);
+    record.m_endTime =
+        QDateTime::fromString(json[QStringLiteral("endTime")].toString(), Qt::ISODate);
     record.m_durationMinutes = json[QStringLiteral("durationMinutes")].toInt();
     record.m_cost = json[QStringLiteral("cost")].toDouble();
     record.m_state = static_cast<SessionState>(json[QStringLiteral("state")].toInt());
@@ -59,15 +61,15 @@ double Record::endSession() {
     if (m_state != SessionState::Online) {
         return 0.0;
     }
-    
+
     m_endTime = QDateTime::currentDateTime();
     // 计算时长（分钟），向上取整
     qint64 secs = m_startTime.secsTo(m_endTime);
     m_durationMinutes = static_cast<int>((secs + 59) / 60);  // 向上取整到分钟
-    
+
     // 计算费用：每小时 COST_PER_HOUR 元，按分钟计费
     m_cost = (m_durationMinutes / 60.0) * COST_PER_HOUR;
-    
+
     m_state = SessionState::Offline;
     return m_cost;
 }
@@ -76,7 +78,7 @@ double Record::calculateCurrentCost() const {
     if (m_state == SessionState::Offline) {
         return m_cost;  // 已结束，返回已计算费用
     }
-    
+
     // 计算截至当前的时长和费用
     QDateTime now = QDateTime::currentDateTime();
     qint64 secs = m_startTime.secsTo(now);
@@ -84,4 +86,4 @@ double Record::calculateCurrentCost() const {
     return (minutes / 60.0) * COST_PER_HOUR;
 }
 
-} // namespace CampusCard
+}  // namespace CampusCard
