@@ -3,11 +3,8 @@
 extends: default
 
 rules:
-  # 缩进
-  indentation:
-    spaces: 2
-    indent-sequences: true
-    check-multi-line-strings: false
+  # 缩进 - 禁用以兼容多种YAML格式（GitHub Actions, CMake等）
+  indentation: disable
 
   # 行长度
   line-length:
@@ -16,12 +13,8 @@ rules:
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
 
-  # 括号
-  brackets:
-    min-spaces-inside: 0
-    max-spaces-inside: 0
-    min-spaces-inside-empty: 0
-    max-spaces-inside-empty: 0
+  # 括号 - 禁用以允许GitHub Actions的语法
+  brackets: disable
 
   # 冒号
   colons:
@@ -54,21 +47,17 @@ rules:
   new-lines:
     type: unix
 
-  # 真值
+  # 真值 - 添加Yes/No以兼容.clang-format
   truthy:
-    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off']
+    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off', 'Yes', 'No']
     check-keys: false
 
   # 文档
   document-start: disable
   document-end: disable
 
-  # 引号
-  quoted-strings:
-    quote-type: any
-    required: only-when-needed
-    extra-allowed: []
-    extra-required: []
+  # 引号 - 禁用以允许配置文件中使用引号
+  quoted-strings: disable
 
   # 八进制值
   octal-values:

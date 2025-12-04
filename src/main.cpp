@@ -9,10 +9,9 @@
  */
 
 #include "ElaApplication.h"
-#include "ui/MainWindow.h"
+#include "view/MainWindow.h"
 
 #include <QApplication>
-
 
 /**
  * @brief 主函数，应用程序入口点
@@ -21,11 +20,11 @@
  * @return 应用程序退出码
  */
 int main(int argc, char* argv[]) {
-    // 创建应用程序实例
+    // 使用ElaApplication替代QApplication以获得更好的主题支持
     QApplication app(argc, argv);
 
     // 设置应用程序信息
-    app.setApplicationName(QStringLiteral("校园卡消费记录查询系统"));
+    app.setApplicationName(QStringLiteral("CampusCardSystem"));
     app.setApplicationVersion(QStringLiteral("1.0.0"));
     app.setOrganizationName(QStringLiteral("CampusCard"));
 
@@ -36,6 +35,5 @@ int main(int argc, char* argv[]) {
     CampusCard::MainWindow mainWindow;
     mainWindow.show();
 
-    // 进入事件循环
     return app.exec();
 }

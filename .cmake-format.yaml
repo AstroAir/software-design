@@ -5,38 +5,38 @@ format:
   # 缩进
   tab_size: 4
   use_tabchars: false
-  
+
   # 行宽
   line_width: 100
-  
+
   # 换行
   max_subgroups_hwrap: 2
   max_pargs_hwrap: 6
   max_rows_cmdline: 2
-  
+
   # 分隔符
   separate_ctrl_name_with_space: false
   separate_fn_name_with_space: false
-  
+
   # 大小写
   command_case: 'lower'
   keyword_case: 'upper'
-  
+
   # 注释
   enable_markup: true
   first_comment_is_literal: false
   literal_comment_pattern: null
-  
+
   # 其他
   dangle_parens: false
   dangle_align: 'prefix'
   min_prefix_chars: 4
   max_prefix_chars: 10
-  
+
   # 空行
   max_lines_hwrap: 2
   line_ending: 'unix'
-  
+
   # 排序
   autosort: true
 

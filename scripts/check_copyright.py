@@ -27,24 +27,24 @@ def check_file(filepath: Path) -> bool:
         content = filepath.read_text(encoding='utf-8')
     except UnicodeDecodeError:
         content = filepath.read_text(encoding='gbk')
-    
+
     # 检查是否有 Doxygen 风格的文件注释
     if SIMPLE_PATTERN.search(content[:500]):  # 只检查前 500 个字符
         return True
-    
+
     return False
 
 
 def main() -> int:
     """主函数"""
     failed_files = []
-    
+
     for arg in sys.argv[1:]:
         filepath = Path(arg)
         if filepath.suffix in ['.h', '.hpp', '.cpp', '.cc', '.cxx']:
             if not check_file(filepath):
                 failed_files.append(str(filepath))
-    
+
     if failed_files:
         print("以下文件缺少版权头/文件注释：")
         for f in failed_files:
@@ -55,7 +55,7 @@ def main() -> int:
         print(' * @brief 文件简要描述')
         print(' */')
         return 1
-    
+
     return 0
 
 

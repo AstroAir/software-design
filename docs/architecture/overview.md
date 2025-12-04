@@ -195,5 +195,5 @@ src/
 
 ## 下一步
 
--   [核心模块](core-modules.md) - 详细了解核心类
--   [UI 组件](ui-components.md) - 了解界面组件
+- [核心模块](core-modules.md) - 详细了解核心类
+- [UI 组件](ui-components.md) - 了解界面组件

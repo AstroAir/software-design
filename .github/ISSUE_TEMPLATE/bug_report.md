@@ -6,6 +6,8 @@ labels: bug
 assignees: ''
 ---
 
+# Bug 报告
+
 ## Bug 描述
 
 简要描述这个 Bug。

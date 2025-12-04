@@ -110,9 +110,9 @@ if (condition)
 
 ### 空行
 
--   函数之间空一行
--   逻辑块之间空一行
--   类成员分组之间空一行
+- 函数之间空一行
+- 逻辑块之间空一行
+- 类成员分组之间空一行
 
 ## 注释规范
 
@@ -180,8 +180,8 @@ private:
 
 ### 使用 `const` 正确性
 
--   不修改对象的成员函数标记为 `const`
--   不修改的参数使用 `const` 引用
+- 不修改对象的成员函数标记为 `const`
+- 不修改的参数使用 `const` 引用
 
 ```cpp
 [[nodiscard]] QString cardId() const { return m_cardId; }
@@ -325,4 +325,4 @@ namespace CampusCard {
 
 ## 下一步
 
--   [贡献指南](contributing.md) - 参与项目开发
+- [贡献指南](contributing.md) - 参与项目开发

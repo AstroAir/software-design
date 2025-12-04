@@ -66,7 +66,7 @@ data/
 
 ```json
 {
-    "password": "admin123"
+    "password": "admin123"  // pragma: allowlist secret
 }
 ```
 
@@ -171,5 +171,5 @@ data/
 
 ## 下一步
 
--   [管理器类](managers.md) - 了解业务接口
--   [信号与槽](signals-slots.md) - 了解事件通信
+- [管理器类](managers.md) - 了解业务接口
+- [信号与槽](signals-slots.md) - 了解事件通信

@@ -51,18 +51,18 @@ def format_cpp_files(files: List[Path], check_only: bool = False) -> bool:
     if not files:
         print("没有找到 C++ 文件")
         return True
-    
+
     print(f"格式化 {len(files)} 个 C++ 文件...")
-    
+
     args = ['clang-format', '-style=file']
     if check_only:
         args.append('--dry-run')
         args.append('--Werror')
     else:
         args.append('-i')
-    
+
     args.extend(str(f) for f in files)
-    
+
     try:
         result = subprocess.run(args, capture_output=True, text=True)
         if result.returncode != 0:
@@ -81,9 +81,9 @@ def format_cmake_files(files: List[Path], check_only: bool = False) -> bool:
     if not files:
         print("没有找到 CMake 文件")
         return True
-    
+
     print(f"格式化 {len(files)} 个 CMake 文件...")
-    
+
     success = True
     for f in files:
         args = ['cmake-format']
@@ -92,7 +92,7 @@ def format_cmake_files(files: List[Path], check_only: bool = False) -> bool:
         else:
             args.append('-i')
         args.append(str(f))
-        
+
         try:
             result = subprocess.run(args, capture_output=True, text=True)
             if result.returncode != 0:
@@ -102,7 +102,7 @@ def format_cmake_files(files: List[Path], check_only: bool = False) -> bool:
         except FileNotFoundError:
             print("警告：未找到 cmake-format，跳过 CMake 文件格式化")
             return True
-    
+
     if success:
         print("CMake 文件格式化完成")
     return success
@@ -111,20 +111,20 @@ def format_cmake_files(files: List[Path], check_only: bool = False) -> bool:
 def main() -> int:
     """主函数"""
     check_only = '--check' in sys.argv
-    
+
     if check_only:
         print("检查模式：只检查格式，不修改文件")
     else:
         print("格式化模式：将修改文件")
-    
+
     print()
-    
+
     cpp_files = find_cpp_files()
     cmake_files = find_cmake_files()
-    
+
     cpp_ok = format_cpp_files(cpp_files, check_only)
     cmake_ok = format_cmake_files(cmake_files, check_only)
-    
+
     print()
     if cpp_ok and cmake_ok:
         print("✓ 所有文件格式正确")

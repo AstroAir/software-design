@@ -150,9 +150,9 @@
 
 推荐扩展：
 
--   **C/C++** - Microsoft 官方 C++ 扩展
--   **CMake Tools** - CMake 集成
--   **Qt tools** - Qt 支持
+- **C/C++** - Microsoft 官方 C++ 扩展
+- **CMake Tools** - CMake 集成
+- **Qt tools** - Qt 支持
 
 `.vscode/settings.json` 示例：
 
@@ -207,5 +207,5 @@
 
 ## 下一步
 
--   [代码规范](code-style.md) - 了解编码规范
--   [贡献指南](contributing.md) - 参与项目开发
+- [代码规范](code-style.md) - 了解编码规范
+- [贡献指南](contributing.md) - 参与项目开发

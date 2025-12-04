@@ -15,9 +15,9 @@
 
 ### 可选软件
 
--   **Ninja** - 更快的构建工具（推荐）
--   **Visual Studio 2022** - Windows 开发环境
--   **MSYS2** - Windows 上的 MinGW 环境
+- **Ninja** - 更快的构建工具（推荐）
+- **Visual Studio 2022** - Windows 开发环境
+- **MSYS2** - Windows 上的 MinGW 环境
 
 ## 获取源码
 
@@ -163,11 +163,11 @@ git submodule update --init --recursive --force
 
 确保使用支持 C++20 的编译器：
 
--   MSVC 2019 16.10+
--   GCC 10+
--   Clang 10+
+- MSVC 2019 16.10+
+- GCC 10+
+- Clang 10+
 
 ## 下一步
 
--   [使用教程](usage.md) - 了解如何使用系统
--   [系统概述](../architecture/overview.md) - 深入了解系统架构
+- [使用教程](usage.md) - 了解如何使用系统
+- [系统概述](../architecture/overview.md) - 深入了解系统架构

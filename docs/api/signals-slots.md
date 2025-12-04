@@ -30,8 +30,8 @@ void loginSucceeded(UserRole role, const QString& cardId);
 
 **参数**：
 
--   `role` - 用户角色（Student/Admin）
--   `cardId` - 卡号（管理员登录时为空）
+- `role` - 用户角色（Student/Admin）
+- `cardId` - 卡号（管理员登录时为空）
 
 **典型连接**：
 
@@ -50,7 +50,7 @@ void loginFailed(LoginResult result);
 
 **参数**：
 
--   `result` - 失败原因
+- `result` - 失败原因
 
 **典型连接**：
 
@@ -101,7 +101,7 @@ void cardUpdated(const QString& cardId);
 
 **参数**：
 
--   `cardId` - 更新的卡号
+- `cardId` - 更新的卡号
 
 **典型连接**：
 
@@ -122,7 +122,7 @@ void recordsChanged(const QString& cardId);
 
 **参数**：
 
--   `cardId` - 相关卡号
+- `cardId` - 相关卡号
 
 **典型连接**：
 
@@ -141,8 +141,8 @@ void sessionStarted(const QString& cardId, const QString& location);
 
 **参数**：
 
--   `cardId` - 卡号
--   `location` - 上机地点
+- `cardId` - 卡号
+- `location` - 上机地点
 
 **典型连接**：
 
@@ -161,8 +161,8 @@ void sessionEnded(const QString& cardId, double cost);
 
 **参数**：
 
--   `cardId` - 卡号
--   `cost` - 本次费用
+- `cardId` - 卡号
+- `cost` - 本次费用
 
 **典型连接**：
 
@@ -274,5 +274,5 @@ flowchart LR
 
 ## 下一步
 
--   [开发环境](../development/environment.md) - 配置开发环境
--   [代码规范](../development/code-style.md) - 了解编码规范
+- [开发环境](../development/environment.md) - 配置开发环境
+- [代码规范](../development/code-style.md) - 了解编码规范

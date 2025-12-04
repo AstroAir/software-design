@@ -337,5 +337,5 @@ bool importData(const QString& filePath, bool merge = false);
 
 ## 下一步
 
--   [UI 组件](ui-components.md) - 了解界面组件
--   [数据模型](../api/data-models.md) - 查看 JSON 格式
+- [UI 组件](ui-components.md) - 了解界面组件
+- [数据模型](../api/data-models.md) - 查看 JSON 格式

@@ -9,13 +9,13 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         submodules: recursive
-    
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
@@ -24,13 +24,13 @@ jobs:
         target: 'desktop'
         arch: 'win64_msvc2019_64'
         cache: true
-    
+
     - name: Configure CMake
       run: cmake -B build -G "Visual Studio 17 2022" -A x64
-    
+
     - name: Build
       run: cmake --build build --config Release
-    
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -39,25 +39,25 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         submodules: recursive
-    
+
     - name: Install Dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y cmake ninja-build
         sudo apt-get install -y qt6-base-dev qt6-tools-dev libgl1-mesa-dev
-    
+
     - name: Configure CMake
       run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-    
+
     - name: Build
       run: cmake --build build
-    
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -66,13 +66,13 @@ jobs:
 
   build-macos:
     runs-on: macos-latest
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         submodules: recursive
-    
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
@@ -80,13 +80,13 @@ jobs:
         host: 'mac'
         target: 'desktop'
         cache: true
-    
+
     - name: Configure CMake
       run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-    
+
     - name: Build
       run: cmake --build build
-    
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:

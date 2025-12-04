@@ -113,8 +113,8 @@ first-line-heading:
 proper-names: false
 
 # MD046 - 代码块风格
-code-block-style:
-  style: fenced
+# 禁用此规则，因为MkDocs的tab容器内的代码块会被误判为缩进代码块
+code-block-style: false
 
 # MD047 - 文件末尾换行
 single-trailing-newline: true

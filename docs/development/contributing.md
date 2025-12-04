@@ -29,16 +29,16 @@ git checkout -b feature/your-feature-name
 
 分支命名规范：
 
--   `feature/xxx` - 新功能
--   `fix/xxx` - Bug 修复
--   `docs/xxx` - 文档更新
--   `refactor/xxx` - 代码重构
+- `feature/xxx` - 新功能
+- `fix/xxx` - Bug 修复
+- `docs/xxx` - 文档更新
+- `refactor/xxx` - 代码重构
 
 ### 4. 开发
 
--   遵循 [代码规范](code-style.md)
--   编写必要的注释
--   确保代码可以编译通过
+- 遵循 [代码规范](code-style.md)
+- 编写必要的注释
+- 确保代码可以编译通过
 
 ### 5. 提交
 
@@ -189,7 +189,7 @@ docs: 更新 API 文档
 
 如有问题，可以通过以下方式联系：
 
--   在 GitHub Issue 中提问
--   发送邮件至项目维护者
+- 在 GitHub Issue 中提问
+- 发送邮件至项目维护者
 
 感谢你的贡献！

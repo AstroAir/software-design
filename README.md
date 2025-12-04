@@ -126,19 +126,21 @@ software-design/
 
 ## 架构设计
 
-本系统采用**三层架构**，职责分离清晰：
+本系统采用**标准MVC架构**，职责分离清晰：
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
-│                        UI 层 (src/ui/)                       │
-│  MainWindow / LoginDialog / AdminDashboard / StudentDashboard│
+│                    View 层 (src/view/)                       │
+│  MainWindow / LoginDialog / AdminPanel / StudentPanel        │
 │  RegisterDialog / RechargeDialog / RecordTableWidget / ...   │
 ├─────────────────────────────────────────────────────────────┤
-│                      业务逻辑层 (src/core/)                   │
-│         AuthManager / CardManager / RecordManager            │
+│                  Controller 层 (src/controller/)             │
+│     AuthController / CardController / RecordController       │
 ├─────────────────────────────────────────────────────────────┤
-│                      数据持久层 (StorageManager)              │
-│                    JSON 文件读写 (data/)                      │
+│                    Model 层 (src/model/)                     │
+│  entities: User / Card / Record                              │
+│  services: AuthService / CardService / RecordService         │
+│  repositories: StorageManager (JSON 文件读写)                │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -167,23 +169,23 @@ software-design/
 namespace CampusCard {
     // 用户角色
     enum class UserRole { Student, Admin };
-    
+
     // 校园卡状态
-    enum class CardState { 
+    enum class CardState {
         Normal = 0,   // 正常
         Lost = 1,     // 挂失
         Frozen = 2    // 冻结
     };
-    
+
     // 上机状态
-    enum class SessionState { 
+    enum class SessionState {
         Offline = 0,  // 离线/已结束
         Online = 1    // 上机中
     };
-    
+
     // 系统常量
     constexpr double COST_PER_HOUR = 1.0;           // 每小时费用
-    const QString DEFAULT_ADMIN_PASSWORD = "admin123";
+    const QString DEFAULT_ADMIN_PASSWORD = "admin123";  // pragma: allowlist secret
     constexpr int MAX_LOGIN_ATTEMPTS = 3;           // 最大登录尝试次数
 }
 ```
@@ -642,7 +644,7 @@ make -j$(nproc)
 
 ```json
 {
-    "password": "admin123"
+    "password": "admin123"  // pragma: allowlist secret
 }
 ```
 

@@ -7,7 +7,8 @@ project(CampusCardSystem VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_EXPORT_COMMAND ON)
+# 生成 compile_commands.json 供 clangd 使用
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ============================================================================
 # Qt6 配置
@@ -54,49 +55,106 @@ set(SKIP_EXAMPLE ON)
 add_subdirectory(third_party/ElaWidgetTools/ElaWidgetTools)
 
 # ============================================================================
-# 源文件收集
+# 源文件收集 - MVC架构
 # ============================================================================
-set(CORE_SOURCES
-    src/core/Card.cpp
-    src/core/Record.cpp
-    src/core/User.cpp
-    src/core/AuthManager.cpp
-    src/core/CardManager.cpp
-    src/core/RecordManager.cpp
-    src/core/StorageManager.cpp
+
+# Model层 - 实体类
+set(MODEL_ENTITIES_SOURCES
+    src/model/entities/User.cpp
+    src/model/entities/Card.cpp
+    src/model/entities/Record.cpp
 )
 
-set(CORE_HEADERS
-    src/core/Card.h
-    src/core/Record.h
-    src/core/User.h
-    src/core/AuthManager.h
-    src/core/CardManager.h
-    src/core/RecordManager.h
-    src/core/StorageManager.h
-    src/core/Types.h
+set(MODEL_ENTITIES_HEADERS
+    src/model/entities/User.h
+    src/model/entities/Card.h
+    src/model/entities/Record.h
 )
 
-set(UI_SOURCES
-    src/ui/MainWindow.cpp
-    src/ui/LoginDialog.cpp
-    src/ui/RegisterDialog.cpp
-    src/ui/AdminDashboard.cpp
-    src/ui/StudentDashboard.cpp
-    src/ui/RechargeDialog.cpp
-    src/ui/RecordTableWidget.cpp
-    src/ui/StatisticsWidget.cpp
+# Model层 - 数据访问层
+set(MODEL_REPOSITORIES_SOURCES
+    src/model/repositories/StorageManager.cpp
 )
 
-set(UI_HEADERS
-    src/ui/MainWindow.h
-    src/ui/LoginDialog.h
-    src/ui/RegisterDialog.h
-    src/ui/AdminDashboard.h
-    src/ui/StudentDashboard.h
-    src/ui/RechargeDialog.h
-    src/ui/RecordTableWidget.h
-    src/ui/StatisticsWidget.h
+set(MODEL_REPOSITORIES_HEADERS
+    src/model/repositories/StorageManager.h
+)
+
+# Model层 - 服务层
+set(MODEL_SERVICES_SOURCES
+    src/model/services/CardService.cpp
+    src/model/services/RecordService.cpp
+    src/model/services/AuthService.cpp
+)
+
+set(MODEL_SERVICES_HEADERS
+    src/model/services/CardService.h
+    src/model/services/RecordService.h
+    src/model/services/AuthService.h
+)
+
+# Model层 - 类型定义
+set(MODEL_HEADERS
+    src/model/Types.h
+)
+
+# Controller层
+set(CONTROLLER_SOURCES
+    src/controller/AuthController.cpp
+    src/controller/CardController.cpp
+    src/controller/RecordController.cpp
+    src/controller/MainController.cpp
+)
+
+set(CONTROLLER_HEADERS
+    src/controller/AuthController.h
+    src/controller/CardController.h
+    src/controller/RecordController.h
+    src/controller/MainController.h
+)
+
+# View层 - 对话框
+set(VIEW_DIALOGS_SOURCES
+    src/view/dialogs/LoginDialog.cpp
+    src/view/dialogs/RegisterDialog.cpp
+    src/view/dialogs/RechargeDialog.cpp
+)
+
+set(VIEW_DIALOGS_HEADERS
+    src/view/dialogs/LoginDialog.h
+    src/view/dialogs/RegisterDialog.h
+    src/view/dialogs/RechargeDialog.h
+)
+
+# View层 - 面板
+set(VIEW_PANELS_SOURCES
+    src/view/panels/AdminPanel.cpp
+    src/view/panels/StudentPanel.cpp
+)
+
+set(VIEW_PANELS_HEADERS
+    src/view/panels/AdminPanel.h
+    src/view/panels/StudentPanel.h
+)
+
+# View层 - 组件
+set(VIEW_WIDGETS_SOURCES
+    src/view/widgets/RecordTableWidget.cpp
+    src/view/widgets/StatisticsWidget.cpp
+)
+
+set(VIEW_WIDGETS_HEADERS
+    src/view/widgets/RecordTableWidget.h
+    src/view/widgets/StatisticsWidget.h
+)
+
+# View层 - 主窗口
+set(VIEW_SOURCES
+    src/view/MainWindow.cpp
+)
+
+set(VIEW_HEADERS
+    src/view/MainWindow.h
 )
 
 set(RESOURCES
@@ -108,17 +166,41 @@ set(RESOURCES
 # ============================================================================
 add_executable(${PROJECT_NAME}
     src/main.cpp
-    ${CORE_SOURCES}
-    ${CORE_HEADERS}
-    ${UI_SOURCES}
-    ${UI_HEADERS}
+    # Model层
+    ${MODEL_ENTITIES_SOURCES}
+    ${MODEL_ENTITIES_HEADERS}
+    ${MODEL_REPOSITORIES_SOURCES}
+    ${MODEL_REPOSITORIES_HEADERS}
+    ${MODEL_SERVICES_SOURCES}
+    ${MODEL_SERVICES_HEADERS}
+    ${MODEL_HEADERS}
+    # Controller层
+    ${CONTROLLER_SOURCES}
+    ${CONTROLLER_HEADERS}
+    # View层
+    ${VIEW_DIALOGS_SOURCES}
+    ${VIEW_DIALOGS_HEADERS}
+    ${VIEW_PANELS_SOURCES}
+    ${VIEW_PANELS_HEADERS}
+    ${VIEW_WIDGETS_SOURCES}
+    ${VIEW_WIDGETS_HEADERS}
+    ${VIEW_SOURCES}
+    ${VIEW_HEADERS}
+    # 资源
     ${RESOURCES}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/model
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/model/entities
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/model/repositories
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/model/services
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/controller
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/view
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/view/dialogs
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/view/panels
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/view/widgets
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ElaWidgetTools/ElaWidgetTools
 )
 
@@ -145,3 +227,37 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/data $<TARGET_FILE_DIR:${PROJECT_NAME}>/data
 )
+
+# ============================================================================
+# ElaWidgetTools DLL 自动拷贝
+# ============================================================================
+if(WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:ElaWidgetTools>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMENT "Copying ElaWidgetTools DLL to output directory"
+    )
+endif()
+
+# ============================================================================
+# clangd 支持：在项目根目录创建 compile_commands.json 符号链接
+# ============================================================================
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+    # 在配置阶段创建符号链接或拷贝
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E create_symlink
+        ${CMAKE_BINARY_DIR}/compile_commands.json
+        ${CMAKE_SOURCE_DIR}/compile_commands.json
+        RESULT_VARIABLE _symlink_result
+    )
+    if(NOT _symlink_result EQUAL 0)
+        # 如果符号链接失败（Windows无权限），则使用拷贝
+        add_custom_target(copy_compile_commands ALL
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_BINARY_DIR}/compile_commands.json
+            ${CMAKE_SOURCE_DIR}/compile_commands.json
+            COMMENT "Copying compile_commands.json to source directory for clangd"
+        )
+    endif()
+endif()
