@@ -1,0 +1,112 @@
+# Pre-commit 配置文件
+# 安装: pip install pre-commit && pre-commit install
+
+default_language_version:
+  python: python3
+
+repos:
+  # 通用检查
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+
+  # C++ 格式化 (clang-format)
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v18.1.3
+    hooks:
+      - id: clang-format
+        types_or: [c++, c]
+        args: ['-style=file', '-i']
+        files: \.(cpp|hpp|h|c|cc|cxx|hxx)$
+        exclude: ^third_party/
+
+  # CMake 格式化
+  - repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.13
+    hooks:
+      - id: cmake-format
+        args: ['--config-files', '.cmake-format.yaml']
+      - id: cmake-lint
+        args: ['--config-files', '.cmake-format.yaml']
+
+  # Markdown 检查
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        args: ['--config', '.markdownlint.yaml', '--fix']
+        exclude: ^(third_party/|CHANGELOG\.md)
+
+  # YAML 检查
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: ['-c', '.yamllint.yaml']
+
+  # Shell 脚本检查
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+
+  # 提交信息规范
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.16.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  # 敏感信息检测
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: ^(third_party/|\.secrets\.baseline)
+
+  # 本地钩子
+  - repo: local
+    hooks:
+      # 检查版权头
+      - id: check-copyright
+        name: Check copyright header
+        entry: python scripts/check_copyright.py
+        language: python
+        types: [c++]
+        exclude: ^third_party/
+
+      # 检查 TODO/FIXME
+      - id: check-todos
+        name: Check TODO/FIXME comments
+        entry: python scripts/check_todos.py
+        language: python
+        types: [c++]
+        exclude: ^third_party/
+        verbose: true
+
+# CI 配置
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: [check-copyright, check-todos]
+  submodules: false

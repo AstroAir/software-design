@@ -1,0 +1,82 @@
+# Yamllint 配置文件
+
+extends: default
+
+rules:
+  # 缩进
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+
+  # 行长度
+  line-length:
+    max: 120
+    level: warning
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+
+  # 括号
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+    min-spaces-inside-empty: 0
+    max-spaces-inside-empty: 0
+
+  # 冒号
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 1
+
+  # 逗号
+  commas:
+    max-spaces-before: 0
+    min-spaces-after: 1
+    max-spaces-after: 1
+
+  # 注释
+  comments:
+    require-starting-space: true
+    ignore-shebangs: true
+    min-spaces-from-content: 1
+
+  # 空行
+  empty-lines:
+    max: 2
+    max-start: 0
+    max-end: 1
+
+  # 键重复
+  key-duplicates: enable
+
+  # 新行
+  new-line-at-end-of-file: enable
+  new-lines:
+    type: unix
+
+  # 真值
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off']
+    check-keys: false
+
+  # 文档
+  document-start: disable
+  document-end: disable
+
+  # 引号
+  quoted-strings:
+    quote-type: any
+    required: only-when-needed
+    extra-allowed: []
+    extra-required: []
+
+  # 八进制值
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: false
+
+# 忽略文件
+ignore: |
+  third_party/
+  build/
+  .git/

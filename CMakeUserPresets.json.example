@@ -1,0 +1,26 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "user-msvc",
+            "inherits": "msvc-release",
+            "displayName": "User MSVC Configuration",
+            "description": "Custom MSVC configuration with local Qt path",
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "C:/Qt/6.7.0/msvc2019_64"
+            }
+        },
+        {
+            "name": "user-mingw",
+            "inherits": "ninja-mingw-release",
+            "displayName": "User MinGW Configuration",
+            "description": "Custom MinGW configuration with local Qt path",
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "C:/msys64/mingw64"
+            },
+            "environment": {
+                "MSYS2_ROOT": "C:/msys64"
+            }
+        }
+    ]
+}

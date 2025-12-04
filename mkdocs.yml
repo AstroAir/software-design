@@ -1,0 +1,88 @@
+site_name: 校园卡管理系统文档
+site_description: 基于 Qt6 和 ElaWidgetTools 的校园卡管理系统技术文档
+site_author: Campus Card Team
+site_url: https://your-username.github.io/software-design/
+
+repo_name: software-design
+repo_url: https://github.com/your-username/software-design
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      lang: zh
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - admonition
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - 首页: index.md
+  - 快速开始:
+      - 安装指南: getting-started/installation.md
+      - 使用教程: getting-started/usage.md
+  - 架构设计:
+      - 系统概述: architecture/overview.md
+      - 核心模块: architecture/core-modules.md
+      - UI 组件: architecture/ui-components.md
+  - API 参考:
+      - 数据模型: api/data-models.md
+      - 管理器类: api/managers.md
+      - 信号与槽: api/signals-slots.md
+  - 开发指南:
+      - 开发环境: development/environment.md
+      - 代码规范: development/code-style.md
+      - 贡献指南: development/contributing.md
+  - 更新日志: changelog.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/your-username/software-design
+
+copyright: Copyright &copy; 2024 Campus Card Team

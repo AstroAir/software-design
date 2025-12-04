@@ -1,0 +1,161 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 24,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_STANDARD": "20",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "windows-msvc-base",
+            "hidden": true,
+            "inherits": "base",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "architecture": {
+                "value": "x64",
+                "strategy": "set"
+            }
+        },
+        {
+            "name": "msvc-debug",
+            "displayName": "MSVC Debug",
+            "description": "Visual Studio 2022 Debug configuration",
+            "inherits": "windows-msvc-base",
+            "generator": "Visual Studio 17 2022",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_PREFIX_PATH": "$env{QT_MSVC_PATH}"
+            }
+        },
+        {
+            "name": "msvc-release",
+            "displayName": "MSVC Release",
+            "description": "Visual Studio 2022 Release configuration",
+            "inherits": "windows-msvc-base",
+            "generator": "Visual Studio 17 2022",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_PREFIX_PATH": "$env{QT_MSVC_PATH}"
+            }
+        },
+        {
+            "name": "mingw-base",
+            "hidden": true,
+            "inherits": "base",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "generator": "MinGW Makefiles",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            },
+            "environment": {
+                "PATH": "$env{MSYS2_ROOT}/mingw64/bin;$penv{PATH}"
+            }
+        },
+        {
+            "name": "mingw-debug",
+            "displayName": "MinGW64 Debug",
+            "description": "MSYS2 MinGW64 Debug configuration",
+            "inherits": "mingw-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_PREFIX_PATH": "$env{QT_MINGW_PATH}"
+            }
+        },
+        {
+            "name": "mingw-release",
+            "displayName": "MinGW64 Release",
+            "description": "MSYS2 MinGW64 Release configuration",
+            "inherits": "mingw-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_PREFIX_PATH": "$env{QT_MINGW_PATH}"
+            }
+        },
+        {
+            "name": "ninja-mingw-base",
+            "hidden": true,
+            "inherits": "base",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            },
+            "environment": {
+                "PATH": "$env{MSYS2_ROOT}/mingw64/bin;$penv{PATH}"
+            }
+        },
+        {
+            "name": "ninja-mingw-debug",
+            "displayName": "Ninja MinGW64 Debug",
+            "description": "MSYS2 MinGW64 with Ninja Debug configuration",
+            "inherits": "ninja-mingw-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_PREFIX_PATH": "$env{QT_MINGW_PATH}"
+            }
+        },
+        {
+            "name": "ninja-mingw-release",
+            "displayName": "Ninja MinGW64 Release",
+            "description": "MSYS2 MinGW64 with Ninja Release configuration",
+            "inherits": "ninja-mingw-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_PREFIX_PATH": "$env{QT_MINGW_PATH}"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "msvc-debug",
+            "configurePreset": "msvc-debug",
+            "configuration": "Debug"
+        },
+        {
+            "name": "msvc-release",
+            "configurePreset": "msvc-release",
+            "configuration": "Release"
+        },
+        {
+            "name": "mingw-debug",
+            "configurePreset": "mingw-debug"
+        },
+        {
+            "name": "mingw-release",
+            "configurePreset": "mingw-release"
+        },
+        {
+            "name": "ninja-mingw-debug",
+            "configurePreset": "ninja-mingw-debug"
+        },
+        {
+            "name": "ninja-mingw-release",
+            "configurePreset": "ninja-mingw-release"
+        }
+    ]
+}

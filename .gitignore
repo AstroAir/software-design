@@ -1,0 +1,45 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+install/
+
+# CMake user presets (local configuration)
+CMakeUserPresets.json
+
+# IDE files
+.idea/
+.vscode/
+*.user
+*.pro.user*
+CMakeLists.txt.user
+CMakeSettings.json
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.pdb
+*.ilk
+*.exp
+
+# Qt generated files
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+*.moc
+*.qm
+
+# Data files (auto-generated at runtime)
+data/cards.json
+data/admin.json
+data/records/
+
+# OS generated files
+.DS_Store
+Thumbs.db

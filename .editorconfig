@@ -1,0 +1,67 @@
+# EditorConfig 配置文件
+# https://editorconfig.org
+
+root = true
+
+# 所有文件的默认配置
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# C/C++ 文件
+[*.{c,cc,cpp,cxx,h,hpp,hxx}]
+indent_size = 4
+max_line_length = 100
+
+# CMake 文件
+[CMakeLists.txt]
+indent_size = 4
+
+[*.cmake]
+indent_size = 4
+
+# JSON 文件
+[*.json]
+indent_size = 2
+
+# YAML 文件
+[*.{yml,yaml}]
+indent_size = 2
+
+# Markdown 文件
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# Makefile
+[Makefile]
+indent_style = tab
+
+# Shell 脚本
+[*.sh]
+indent_size = 2
+
+# Python 脚本
+[*.py]
+indent_size = 4
+max_line_length = 100
+
+# Qt 资源文件
+[*.qrc]
+indent_size = 2
+
+# Qt UI 文件
+[*.ui]
+indent_size = 2
+
+# Windows 批处理
+[*.{bat,cmd}]
+end_of_line = crlf
+
+# Git 配置
+[.git*]
+indent_size = 4

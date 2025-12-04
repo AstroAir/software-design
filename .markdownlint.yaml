@@ -1,0 +1,132 @@
+# Markdownlint 配置文件
+
+# 默认启用所有规则
+default: true
+
+# MD001 - 标题层级递增
+heading-increment: true
+
+# MD003 - 标题风格
+heading-style:
+  style: atx
+
+# MD004 - 无序列表风格
+ul-style:
+  style: dash
+
+# MD007 - 无序列表缩进
+ul-indent:
+  indent: 2
+
+# MD009 - 行尾空格
+no-trailing-spaces:
+  br_spaces: 2
+  list_item_empty_lines: false
+
+# MD010 - 硬制表符
+no-hard-tabs:
+  code_blocks: false
+
+# MD012 - 多个空行
+no-multiple-blanks:
+  maximum: 2
+
+# MD013 - 行长度
+line-length:
+  line_length: 200
+  heading_line_length: 200
+  code_block_line_length: 200
+  code_blocks: false
+  tables: false
+
+# MD022 - 标题周围空行
+blanks-around-headings:
+  lines_above: 1
+  lines_below: 1
+
+# MD024 - 重复标题（允许在不同章节中）
+no-duplicate-heading:
+  siblings_only: true
+
+# MD025 - 单个顶级标题
+single-h1:
+  front_matter_title: ''
+
+# MD026 - 标题尾部标点
+no-trailing-punctuation:
+  punctuation: '.,;:!?。，；：！？'
+
+# MD029 - 有序列表前缀
+ol-prefix:
+  style: ordered
+
+# MD030 - 列表标记后空格
+list-marker-space:
+  ul_single: 1
+  ol_single: 1
+  ul_multi: 1
+  ol_multi: 1
+
+# MD031 - 代码块周围空行
+blanks-around-fences: true
+
+# MD032 - 列表周围空行
+blanks-around-lists: true
+
+# MD033 - 内联 HTML（允许特定标签）
+no-inline-html:
+  allowed_elements:
+    - div
+    - span
+    - br
+    - img
+    - a
+    - p
+    - h1
+    - h2
+    - h3
+    - kbd
+    - details
+    - summary
+    - sup
+    - sub
+
+# MD034 - 裸 URL
+no-bare-urls: true
+
+# MD035 - 水平线风格
+hr-style:
+  style: '---'
+
+# MD036 - 强调代替标题
+no-emphasis-as-heading: false
+
+# MD040 - 代码块语言
+fenced-code-language: true
+
+# MD041 - 首行标题
+first-line-heading:
+  front_matter_title: ''
+  level: 1
+
+# MD044 - 专有名词大小写
+proper-names: false
+
+# MD046 - 代码块风格
+code-block-style:
+  style: fenced
+
+# MD047 - 文件末尾换行
+single-trailing-newline: true
+
+# MD048 - 代码围栏风格
+code-fence-style:
+  style: backtick
+
+# MD049 - 强调风格
+emphasis-style:
+  style: asterisk
+
+# MD050 - 加粗风格
+strong-style:
+  style: asterisk
