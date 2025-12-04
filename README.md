@@ -87,25 +87,37 @@ software-design/
 ├── src/
 │   ├── main.cpp                    # 程序入口
 │   │
-│   ├── core/                       # 核心业务逻辑层（15 个文件）
+│   ├── model/                      # Model 层 - 数据和业务逻辑
 │   │   ├── Types.h                 # 全局类型定义（枚举、常量）
-│   │   ├── Card.h/cpp              # 校园卡实体类
-│   │   ├── Record.h/cpp            # 上机记录实体类
-│   │   ├── User.h/cpp              # 用户实体类
-│   │   ├── AuthManager.h/cpp       # 认证管理器（登录/登出）
-│   │   ├── CardManager.h/cpp       # 卡管理器（CRUD、充值、挂失等）
-│   │   ├── RecordManager.h/cpp     # 记录管理器（上下机、统计）
-│   │   └── StorageManager.h/cpp    # 存储管理器（JSON 读写，单例模式）
+│   │   ├── entities/               # 实体类
+│   │   │   ├── Card.h/cpp          # 校园卡实体
+│   │   │   ├── Record.h/cpp        # 上机记录实体
+│   │   │   └── User.h/cpp          # 用户实体
+│   │   ├── services/               # 业务服务层
+│   │   │   ├── AuthService.h/cpp   # 认证服务
+│   │   │   ├── CardService.h/cpp   # 卡业务服务
+│   │   │   └── RecordService.h/cpp # 记录业务服务
+│   │   └── repositories/           # 数据仓储层
+│   │       └── StorageManager.h/cpp # 存储管理器（JSON 读写，单例模式）
 │   │
-│   └── ui/                         # 用户界面层（16 个文件）
-│       ├── MainWindow.h/cpp        # 主窗口（ElaWindow 基类，导航管理）
-│       ├── LoginDialog.h/cpp       # 登录对话框（ElaDialog）
-│       ├── RegisterDialog.h/cpp    # 注册对话框（创建新卡）
-│       ├── AdminDashboard.h/cpp    # 管理员控制面板
-│       ├── StudentDashboard.h/cpp  # 学生控制面板
-│       ├── RechargeDialog.h/cpp    # 充值对话框（ElaContentDialog）
-│       ├── RecordTableWidget.h/cpp # 上机记录表格组件
-│       └── StatisticsWidget.h/cpp  # 统计报表组件
+│   ├── view/                       # View 层 - 用户界面
+│   │   ├── MainWindow.h/cpp        # 主窗口（ElaWindow 基类）
+│   │   ├── dialogs/                # 对话框
+│   │   │   ├── LoginDialog.h/cpp   # 登录对话框
+│   │   │   ├── RegisterDialog.h/cpp # 注册对话框
+│   │   │   └── RechargeDialog.h/cpp # 充值对话框
+│   │   ├── panels/                 # 面板
+│   │   │   ├── AdminPanel.h/cpp    # 管理员控制面板
+│   │   │   └── StudentPanel.h/cpp  # 学生控制面板
+│   │   └── widgets/                # 可复用组件
+│   │       ├── RecordTableWidget.h/cpp # 上机记录表格
+│   │       └── StatisticsWidget.h/cpp  # 统计报表组件
+│   │
+│   └── controller/                 # Controller 层 - 控制器
+│       ├── MainController.h/cpp    # 主控制器（协调所有服务和控制器）
+│       ├── AuthController.h/cpp    # 认证控制器
+│       ├── CardController.h/cpp    # 卡控制器
+│       └── RecordController.h/cpp  # 记录控制器
 │
 ├── resources/
 │   ├── resources.qrc               # Qt 资源文件
@@ -126,7 +138,7 @@ software-design/
 
 ## 架构设计
 
-本系统采用**标准MVC架构**，职责分离清晰：
+本系统采用**标准 MVC 架构**，职责分离清晰：
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
@@ -135,7 +147,8 @@ software-design/
 │  RegisterDialog / RechargeDialog / RecordTableWidget / ...   │
 ├─────────────────────────────────────────────────────────────┤
 │                  Controller 层 (src/controller/)             │
-│     AuthController / CardController / RecordController       │
+│  MainController / AuthController / CardController /          │
+│  RecordController                                            │
 ├─────────────────────────────────────────────────────────────┤
 │                    Model 层 (src/model/)                     │
 │  entities: User / Card / Record                              │
@@ -144,18 +157,27 @@ software-design/
 └─────────────────────────────────────────────────────────────┘
 ```
 
+### 层次职责
+
+| 层次 | 职责 | 主要组件 |
+|------|------|----------|
+| **View** | 用户界面展示和交互 | MainWindow, Dialogs, Panels, Widgets |
+| **Controller** | 协调 View 和 Model，处理用户请求 | MainController, AuthController, CardController, RecordController |
+| **Model** | 数据和业务逻辑 | Entities, Services, Repositories |
+
 ### 设计原则
 
 - **单一职责**：每个类只负责一个功能领域
-- **依赖注入**：UI 层通过构造函数注入管理器依赖
+- **依赖注入**：Controller 通过构造函数注入 Service 依赖
 - **信号槽解耦**：使用 Qt 信号槽机制实现模块间通信
 - **单例模式**：`StorageManager` 使用单例确保数据一致性
+- **分层架构**：View → Controller → Service → Repository
 
 ### 数据流
 
-1. **登录流程**：`LoginDialog` → `AuthManager.studentLogin()` → `CardManager.findCard()` → 验证密码 → 发射 `loginSucceeded` 信号 → `MainWindow` 切换界面
-2. **上机流程**：`StudentDashboard` → `RecordManager.startSession()` → 创建 `Record` → `StorageManager` 保存 → 发射 `sessionStarted` 信号
-3. **下机流程**：`StudentDashboard` → `RecordManager.endSession()` → 计算费用 → `CardManager.deductFromCard()` → 更新余额 → 发射 `sessionEnded` 信号
+1. **登录流程**：`LoginDialog` → `AuthController.handleStudentLogin()` → `AuthService.studentLogin()` → `CardService.verifyPassword()` → 发射 `loginSuccess` 信号 → `MainWindow` 切换界面
+2. **上机流程**：`StudentPanel` → `RecordController.handleStartSession()` → `RecordService.startSession()` → `StorageManager` 保存 → 发射 `sessionStarted` 信号
+3. **下机流程**：`StudentPanel` → `RecordController.handleEndSession()` → `RecordService.endSession()` → `CardService.deduct()` → 更新余额 → 发射 `sessionEnded` 信号
 
 ---
 
@@ -186,6 +208,7 @@ namespace CampusCard {
     // 系统常量
     constexpr double COST_PER_HOUR = 1.0;           // 每小时费用
     const QString DEFAULT_ADMIN_PASSWORD = "admin123";  // pragma: allowlist secret
+    const QString DEFAULT_STUDENT_PASSWORD = "123456";  // 默认学生密码
     constexpr int MAX_LOGIN_ATTEMPTS = 3;           // 最大登录尝试次数
 }
 ```
@@ -234,7 +257,9 @@ namespace CampusCard {
 - `calculateCurrentCost()` - 计算当前费用（不结束）
 - `isOnline()` - 是否在上机中
 
-### AuthManager 类 - 认证管理器
+### AuthService 类 - 认证服务
+
+位于 Model 层，处理用户登录和会话管理。
 
 **登录结果枚举**：
 
@@ -255,52 +280,134 @@ enum class LoginResult {
 - `adminLogin(password)` - 管理员登录
 - `logout()` - 登出
 - `changeAdminPassword(oldPwd, newPwd)` - 修改管理员密码
+- `isLoggedIn()` / `currentRole()` / `currentCardId()` - 会话状态查询
 
 **信号**：
 
 - `loginSucceeded(UserRole, QString cardId)` - 登录成功
-- `loginFailed(LoginResult)` - 登录失败
+- `loginFailed(LoginResult, QString cardId)` - 登录失败
 - `loggedOut()` - 已登出
+- `passwordError(QString cardId, int remainingAttempts)` - 密码错误
+- `cardFrozen(QString cardId)` - 卡被冻结
 
-### CardManager 类 - 卡管理器
+### AuthController 类 - 认证控制器
+
+位于 Controller 层，协调 View 和 AuthService 的交互。
 
 **主要方法**：
 
-- `getAllCards()` - 获取所有卡
-- `findCard(cardId)` - 按卡号查找
-- `findCardByStudentId(studentId)` - 按学号查找
+- `handleStudentLogin(cardId, password)` - 处理学生登录请求
+- `handleAdminLogin(password)` - 处理管理员登录请求
+- `handleLogout()` - 处理登出请求
+- `handleChangeAdminPassword(oldPwd, newPwd)` - 处理修改管理员密码
+
+**信号**：
+
+- `loginSuccess(UserRole, QString cardId, QString userName)` - 登录成功
+- `loginFailed(LoginResult, QString message)` - 登录失败
+- `logoutSuccess()` - 登出成功
+
+### CardService 类 - 卡业务服务
+
+位于 Model 层，处理卡片的 CRUD 操作和业务逻辑。
+
+**主要方法**：
+
+- `getAllCards()` / `findCard(cardId)` / `findCardByStudentId(studentId)` - 查询
 - `createCard(cardId, name, studentId, balance)` - 创建新卡
-- `rechargeCard(cardId, amount)` - 充值
-- `deductFromCard(cardId, amount)` - 扣款
-- `reportCardLost(cardId)` / `cancelCardLost(cardId)` - 挂失/解挂
-- `freezeCard(cardId)` / `unfreezeCard(cardId)` - 冻结/解冻
-- `resetPassword(cardId, newPassword)` - 重置密码
+- `recharge(cardId, amount)` / `deduct(cardId, amount)` - 充值/扣款
+- `reportLost(cardId)` / `cancelLost(cardId)` - 挂失/解挂
+- `freeze(cardId)` / `unfreeze(cardId)` - 冻结/解冻
+- `verifyPassword(cardId, password)` - 验证密码
+- `changePassword(cardId, oldPwd, newPwd)` / `resetPassword(cardId, newPwd)` - 密码管理
 
 **信号**：
 
 - `cardsChanged()` - 卡数据变更
 - `cardUpdated(QString cardId)` - 单张卡更新
+- `cardCreated(QString cardId)` - 卡创建
+- `balanceChanged(QString cardId, double newBalance)` - 余额变更
+- `cardStateChanged(QString cardId, CardState newState)` - 卡状态变更
 
-### RecordManager 类 - 记录管理器
+### CardController 类 - 卡控制器
+
+位于 Controller 层，协调 View 和 CardService 的交互。
+
+**主要方法**：
+
+- `handleCreateCard(...)` / `handleRegisterCard(...)` - 处理创建卡请求
+- `handleRecharge(cardId, amount)` / `handleDeduct(cardId, amount)` - 处理充值/扣款
+- `handleReportLost(cardId)` / `handleCancelLost(cardId)` - 处理挂失/解挂
+- `handleFreeze(cardId)` / `handleUnfreeze(cardId)` - 处理冻结/解冻
+- `handleChangePassword(...)` / `handleResetPassword(...)` - 处理密码操作
+
+**信号**：
+
+- `cardCreated(QString cardId)` / `cardCreateFailed(QString message)` - 创建结果
+- `rechargeSuccess(QString cardId, double newBalance)` / `rechargeFailed(QString message)` - 充值结果
+- `cardsUpdated()` / `cardUpdated(QString cardId)` - 数据更新通知
+
+### RecordService 类 - 记录业务服务
+
+位于 Model 层，管理上机会话和记录统计。
 
 **主要方法**：
 
 - `startSession(cardId, location)` - 开始上机
 - `endSession(cardId)` - 结束上机，返回费用
-- `isOnline(cardId)` - 检查是否在线
-- `getCurrentSession(cardId)` - 获取当前会话
-- `getRecords(cardId)` - 获取所有记录
-- `getRecordsByDate(cardId, date)` - 按日期查询
-- `getTotalDuration(cardId)` - 统计总时长
-- `getTotalCost(cardId)` - 统计总费用
-- `getDailyIncome(date)` - 统计当日收入
-- `getAllRecordsByDate(date)` - 获取所有卡的当日记录
+- `isOnline(cardId)` / `getCurrentSession(cardId)` - 会话状态查询
+- `calculateCurrentCost(cardId)` - 计算当前费用（不结束会话）
+- `getRecords(cardId)` / `getRecordsByDate(...)` / `getRecordsByDateRange(...)` - 记录查询
+- `getTotalSessionCount(cardId)` / `getTotalDuration(cardId)` / `getTotalCost(cardId)` - 个人统计
+- `getDailyIncome(date)` / `getDailySessionCount(date)` / `getDailyTotalDuration(date)` - 日统计
+- `getOnlineCount()` - 获取当前在线人数
 
 **信号**：
 
 - `recordsChanged(QString cardId)` - 记录变更
 - `sessionStarted(QString cardId, QString location)` - 上机开始
-- `sessionEnded(QString cardId, double cost)` - 上机结束
+- `sessionEnded(QString cardId, double cost, int duration)` - 上机结束
+
+### RecordController 类 - 记录控制器
+
+位于 Controller 层，协调 View 和 RecordService 的交互。
+
+**主要方法**：
+
+- `handleStartSession(cardId, location)` - 处理开始上机请求
+- `handleEndSession(cardId)` - 处理结束上机请求
+- `getRecords(cardId)` / `getFilteredRecords(...)` - 获取记录
+- `getTotalSessionCount(cardId)` / `getTotalDuration(cardId)` / `getTotalCost(cardId)` - 统计查询
+- `getDailyIncome(date)` / `getDailySessionCount(date)` - 日统计查询
+
+**信号**：
+
+- `sessionStarted(QString cardId, QString location)` - 上机成功
+- `sessionStartFailed(QString message)` - 上机失败
+- `sessionEnded(QString cardId, double cost, int duration)` - 下机成功
+- `sessionEndFailed(QString message)` - 下机失败
+- `recordsUpdated(QString cardId)` - 记录更新
+
+### MainController 类 - 主控制器
+
+作为 Controller 层的入口点，管理所有 Service 和子 Controller。
+
+**主要方法**：
+
+- `initialize(dataPath)` - 初始化控制器和服务
+- `authController()` / `cardController()` / `recordController()` - 获取子控制器
+- `cardService()` / `recordService()` / `authService()` - 获取服务（用于 View 直接查询）
+- `generateMockData(cardCount, recordsPerCard)` - 生成模拟数据
+- `exportData(filePath)` / `importData(filePath, merge)` - 数据导入导出
+- `reloadData()` - 重新加载数据
+
+**信号**：
+
+- `initialized()` - 初始化完成
+- `dataReloaded()` - 数据重新加载完成
+- `exportSuccess()` / `exportFailed(QString message)` - 导出结果
+- `importSuccess()` / `importFailed(QString message)` - 导入结果
+- `mockDataGenerated(int count)` - 模拟数据生成完成
 
 ### StorageManager 类 - 存储管理器（单例）
 
@@ -338,17 +445,15 @@ data/
 
 **功能**：
 
-- 侧边栏导航（主页、管理员、学生）
-- 页面切换管理
-- 搜索建议框（`ElaSuggestBox`）
+- 页面堆叠切换（欢迎页/管理员面板/学生面板）
 - 登录/登出状态管理
 - 关于对话框
 
 **关键成员**：
 
-- `m_cardManager` / `m_recordManager` / `m_authManager` - 业务管理器
-- `m_loginDialog` / `m_adminDashboard` / `m_studentDashboard` - 子界面
-- `m_suggestBox` - 搜索建议框
+- `m_mainController` - 主控制器（管理所有 Service 和 Controller）
+- `m_loginDialog` / `m_adminPanel` / `m_studentPanel` - 子界面
+- `m_stackedWidget` - 页面堆叠容器
 
 ### LoginDialog - 登录对话框
 
@@ -380,13 +485,15 @@ data/
 - 密码/确认密码输入框
 - 生成卡号按钮
 
-### AdminDashboard - 管理员控制面板
+### AdminPanel - 管理员控制面板
+
+继承自 `QWidget`，提供卡管理和系统管理功能。
 
 **UI 布局**：
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
-│  搜索框  │  当日收入  │  总卡数  │  在线人数  │  日期选择  │
+│  搜索框  │  当日收入  │  总卡数  │  在线人数           │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │                    卡列表表格                            │
@@ -398,6 +505,12 @@ data/
 └─────────────────────────────────────────────────────────┘
 ```
 
+**关键成员**：
+
+- `m_mainController` / `m_cardController` / `m_recordController` / `m_authController` - 控制器
+- `m_cardTable` / `m_cardModel` - 卡列表表格和数据模型
+- `m_searchEdit` - 搜索输入框
+
 **功能按钮**：
 
 - 充值、挂失、解挂、解冻、重置密码
@@ -407,7 +520,9 @@ data/
 - 修改管理员密码
 - 退出登录
 
-### StudentDashboard - 学生控制面板
+### StudentPanel - 学生控制面板
+
+继承自 `QWidget`，显示余额、上机记录和统计信息。
 
 **UI 布局**：
 
@@ -431,6 +546,12 @@ data/
 │  [修改密码]  [退出登录]                                  │
 └─────────────────────────────────────────────────────────┘
 ```
+
+**关键成员**：
+
+- `m_cardController` / `m_recordController` - 控制器
+- `m_currentCardId` - 当前卡号
+- `m_recordTable` - 记录表格组件
 
 ### RechargeDialog - 充值对话框
 
@@ -704,29 +825,40 @@ make -j$(nproc)
 
 | 信号 | 发射时机 | 接收者 |
 |------|----------|--------|
-| `AuthManager::loginSucceeded` | 登录成功 | `MainWindow` 切换界面 |
-| `AuthManager::loginFailed` | 登录失败 | `LoginDialog` 显示错误 |
-| `AuthManager::loggedOut` | 用户登出 | `MainWindow` 返回欢迎页 |
-| `CardManager::cardsChanged` | 卡数据变更 | `AdminDashboard` 刷新列表 |
-| `CardManager::cardUpdated` | 单卡更新 | `StudentDashboard` 刷新信息 |
-| `RecordManager::sessionStarted` | 上机开始 | UI 更新状态 |
-| `RecordManager::sessionEnded` | 上机结束 | UI 更新统计 |
-| `RecordManager::recordsChanged` | 记录变更 | 表格刷新 |
+| `AuthController::loginSuccess` | 登录成功 | `MainWindow` 切换界面 |
+| `AuthController::loginFailed` | 登录失败 | `LoginDialog` 显示错误 |
+| `AuthController::logoutSuccess` | 用户登出 | `MainWindow` 返回欢迎页 |
+| `CardController::cardsUpdated` | 卡数据变更 | `AdminPanel` 刷新列表 |
+| `CardController::cardUpdated` | 单卡更新 | `StudentPanel` 刷新信息 |
+| `RecordController::sessionStarted` | 上机开始 | UI 更新状态 |
+| `RecordController::sessionEnded` | 上机结束 | UI 更新统计 |
+| `RecordController::recordsUpdated` | 记录变更 | 表格刷新 |
 
 ### 文件依赖关系
 
 ```text
-Types.h
-    ↓
-Card.h ← Record.h ← User.h
-    ↓         ↓
-CardManager.h  RecordManager.h
-    ↓              ↓
-    └──── AuthManager.h
-              ↓
-         StorageManager.h (单例)
-              ↓
-         UI 层组件
+Model 层:
+  Types.h
+      ↓
+  entities/: Card.h ← Record.h ← User.h
+      ↓
+  services/: CardService ← RecordService ← AuthService
+      ↓
+  repositories/: StorageManager (单例)
+
+Controller 层:
+  MainController
+      ↓
+  AuthController / CardController / RecordController
+      ↓
+  依赖 Service 层
+
+View 层:
+  MainWindow
+      ↓
+  LoginDialog / AdminPanel / StudentPanel
+      ↓
+  依赖 Controller 层
 ```
 
 ### 扩展建议

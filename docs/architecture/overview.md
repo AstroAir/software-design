@@ -4,63 +4,99 @@
 
 ## 架构概览
 
-系统采用经典的**三层架构**设计，实现了关注点分离和模块化开发。
+系统采用标准的 **MVC（Model-View-Controller）架构**设计，实现了关注点分离和模块化开发。
 
 ```mermaid
 graph TB
-    subgraph UI["UI 层"]
+    subgraph View["View 层 (src/view/)"]
         MW[MainWindow]
         LD[LoginDialog]
-        AD[AdminDashboard]
-        SD[StudentDashboard]
+        AP[AdminPanel]
+        SP[StudentPanel]
+        RD[RegisterDialog]
+        ReD[RechargeDialog]
     end
 
-    subgraph BL["业务逻辑层"]
-        AM[AuthManager]
-        CM[CardManager]
-        RM[RecordManager]
+    subgraph Controller["Controller 层 (src/controller/)"]
+        MC[MainController]
+        AC[AuthController]
+        CC[CardController]
+        RC[RecordController]
     end
 
-    subgraph DA["数据持久层"]
-        SM[StorageManager]
-        JSON[(JSON Files)]
+    subgraph Model["Model 层 (src/model/)"]
+        subgraph Services["业务服务"]
+            AS[AuthService]
+            CS[CardService]
+            RS[RecordService]
+        end
+        subgraph Entities["实体类"]
+            Card[Card]
+            Record[Record]
+            User[User]
+        end
+        subgraph Repositories["数据仓储"]
+            SM[StorageManager]
+            JSON[(JSON Files)]
+        end
     end
 
-    UI --> BL
-    BL --> DA
+    View --> Controller
+    Controller --> Services
+    Services --> Entities
+    Services --> Repositories
     SM --> JSON
 ```
 
 ## 层次职责
 
-### UI 层（Presentation Layer）
+### View 层（视图层）
 
-负责用户界面展示和用户交互。
+负责用户界面展示和用户交互，不包含业务逻辑。
 
 | 组件                | 职责                 |
 | ------------------- | -------------------- |
-| `MainWindow`        | 主窗口框架，导航管理 |
+| `MainWindow`        | 主窗口框架，页面切换 |
 | `LoginDialog`       | 登录认证界面         |
 | `RegisterDialog`    | 新卡注册界面         |
-| `AdminDashboard`    | 管理员控制面板       |
-| `StudentDashboard`  | 学生操作面板         |
+| `AdminPanel`        | 管理员控制面板       |
+| `StudentPanel`      | 学生操作面板         |
 | `RechargeDialog`    | 充值对话框           |
 | `StatisticsWidget`  | 统计报表组件         |
 | `RecordTableWidget` | 记录表格组件         |
 
-### 业务逻辑层（Business Logic Layer）
+### Controller 层（控制器层）
 
-封装核心业务规则和流程控制。
+协调 View 和 Model 的交互，处理用户请求。
+
+| 组件               | 职责                           |
+| ------------------ | ------------------------------ |
+| `MainController`   | 主控制器，管理所有 Service 和 Controller |
+| `AuthController`   | 处理登录/登出请求             |
+| `CardController`   | 处理卡管理请求               |
+| `RecordController` | 处理上下机和记录查询请求     |
+
+### Model 层（模型层）
+
+包含数据和业务逻辑，分为三个子层：
+
+#### 实体类 (entities/)
+
+| 组件     | 职责           |
+| -------- | -------------- |
+| `Card`   | 校园卡实体     |
+| `Record` | 上机记录实体   |
+| `User`   | 用户实体       |
+
+#### 业务服务 (services/)
 
 | 组件            | 职责                   |
 | --------------- | ---------------------- |
-| `AuthManager`   | 用户认证、登录状态管理 |
-| `CardManager`   | 卡片 CRUD、状态管理    |
-| `RecordManager` | 上机会话、记录统计     |
+| `AuthService`   | 用户认证、会话管理     |
+| `CardService`   | 卡片 CRUD、状态管理    |
+| `RecordService` | 上机会话、记录统计     |
 
-### 数据持久层（Data Access Layer）
-
-负责数据的存储和读取。
+#### 数据仓储 (repositories/)
 
 | 组件             | 职责                        |
 | ---------------- | --------------------------- |
@@ -94,28 +130,47 @@ private:
 ```mermaid
 sequenceDiagram
     participant User
-    participant CardManager
-    participant AdminDashboard
+    participant AdminPanel
+    participant CardController
+    participant CardService
     participant StorageManager
 
-    User->>CardManager: rechargeCard()
-    CardManager->>CardManager: 更新余额
-    CardManager->>StorageManager: saveAllCards()
-    CardManager-->>AdminDashboard: cardsChanged()
-    AdminDashboard->>AdminDashboard: 刷新列表
+    User->>AdminPanel: 点击充值按钮
+    AdminPanel->>CardController: handleRecharge()
+    CardController->>CardService: recharge()
+    CardService->>CardService: 更新余额
+    CardService->>StorageManager: saveAll()
+    CardService-->>CardController: balanceChanged()
+    CardController-->>AdminPanel: rechargeSuccess()
+    AdminPanel->>AdminPanel: 刷新列表
 ```
 
 ### 依赖注入（Dependency Injection）
 
-Manager 类通过构造函数注入依赖，便于测试和扩展。
+Controller 类通过构造函数注入 Service 依赖，便于测试和扩展。
 
 ```cpp
-class AuthManager : public QObject {
+class AuthController : public QObject {
 public:
-    explicit AuthManager(CardManager* cardManager,
-                         QObject* parent = nullptr);
+    explicit AuthController(AuthService* authService,
+                            CardService* cardService,
+                            QObject* parent = nullptr);
+};
+
+class CardController : public QObject {
+public:
+    explicit CardController(CardService* cardService,
+                            QObject* parent = nullptr);
 };
 ```
+
+### MVC 模式
+
+严格遵循 MVC 分层：
+
+- **Model**：不依赖 View 和 Controller，通过信号通知状态变化
+- **View**：只依赖 Controller，不直接操作 Model
+- **Controller**：协调 View 和 Model，处理用户输入
 
 ## 数据流
 
@@ -123,55 +178,71 @@ public:
 
 ```mermaid
 flowchart LR
-    A[用户输入] --> B{角色判断}
-    B -->|学生| C[验证卡号密码]
-    B -->|管理员| D[验证管理员密码]
-    C --> E{验证结果}
-    D --> E
-    E -->|成功| F[切换到对应面板]
-    E -->|失败| G[显示错误信息]
-    G -->|密码错误3次| H[冻结账户]
+    A[LoginDialog] --> B[AuthController]
+    B --> C[AuthService]
+    C --> D[CardService]
+    D --> E{验证结果}
+    E -->|成功| F[loginSuccess 信号]
+    E -->|失败| G[loginFailed 信号]
+    F --> H[MainWindow 切换面板]
+    G --> I[LoginDialog 显示错误]
 ```
 
 ### 上机计费流程
 
 ```mermaid
 flowchart TB
-    A[开始上机] --> B[创建 Record]
-    B --> C[记录开始时间]
-    C --> D[用户使用中...]
-    D --> E[结束上机]
-    E --> F[计算时长]
-    F --> G[计算费用]
-    G --> H[扣除余额]
-    H --> I[保存记录]
+    A[StudentPanel] --> B[RecordController]
+    B --> C[RecordService]
+    C --> D[创建 Record]
+    D --> E[记录开始时间]
+    E --> F[sessionStarted 信号]
+    F --> G[用户使用中...]
+    G --> H[RecordController]
+    H --> I[RecordService]
+    I --> J[计算时长和费用]
+    J --> K[CardService 扣款]
+    K --> L[StorageManager 保存]
+    L --> M[sessionEnded 信号]
 ```
 
 ## 文件结构
 
 ```text
 src/
-├── core/                    # 核心业务逻辑
-│   ├── Types.h              # 全局类型定义
-│   ├── Card.h/cpp           # 校园卡实体
-│   ├── Record.h/cpp         # 上机记录实体
-│   ├── User.h/cpp           # 用户实体
-│   ├── AuthManager.h/cpp    # 认证管理
-│   ├── CardManager.h/cpp    # 卡片管理
-│   ├── RecordManager.h/cpp  # 记录管理
-│   └── StorageManager.h/cpp # 存储管理
+├── model/                      # Model 层
+│   ├── Types.h                 # 全局类型定义
+│   ├── entities/               # 实体类
+│   │   ├── Card.h/cpp          # 校园卡实体
+│   │   ├── Record.h/cpp        # 上机记录实体
+│   │   └── User.h/cpp          # 用户实体
+│   ├── services/               # 业务服务
+│   │   ├── AuthService.h/cpp   # 认证服务
+│   │   ├── CardService.h/cpp   # 卡业务服务
+│   │   └── RecordService.h/cpp # 记录业务服务
+│   └── repositories/           # 数据仓储
+│       └── StorageManager.h/cpp # 存储管理器
 │
-├── ui/                      # 用户界面
-│   ├── MainWindow.h/cpp     # 主窗口
-│   ├── LoginDialog.h/cpp    # 登录对话框
-│   ├── RegisterDialog.h/cpp # 注册对话框
-│   ├── AdminDashboard.h/cpp # 管理员面板
-│   ├── StudentDashboard.h/cpp # 学生面板
-│   ├── RechargeDialog.h/cpp # 充值对话框
-│   ├── StatisticsWidget.h/cpp # 统计组件
-│   └── RecordTableWidget.h/cpp # 记录表格
+├── view/                       # View 层
+│   ├── MainWindow.h/cpp        # 主窗口
+│   ├── dialogs/                # 对话框
+│   │   ├── LoginDialog.h/cpp   # 登录对话框
+│   │   ├── RegisterDialog.h/cpp # 注册对话框
+│   │   └── RechargeDialog.h/cpp # 充值对话框
+│   ├── panels/                 # 面板
+│   │   ├── AdminPanel.h/cpp    # 管理员面板
+│   │   └── StudentPanel.h/cpp  # 学生面板
+│   └── widgets/                # 可复用组件
+│       ├── RecordTableWidget.h/cpp # 记录表格
+│       └── StatisticsWidget.h/cpp  # 统计组件
 │
-└── main.cpp                 # 程序入口
+├── controller/                 # Controller 层
+│   ├── MainController.h/cpp    # 主控制器
+│   ├── AuthController.h/cpp    # 认证控制器
+│   ├── CardController.h/cpp    # 卡控制器
+│   └── RecordController.h/cpp  # 记录控制器
+│
+└── main.cpp                    # 程序入口
 ```
 
 ## 技术选型

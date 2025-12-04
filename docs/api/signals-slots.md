@@ -9,35 +9,40 @@
 ```mermaid
 sequenceDiagram
     participant User
-    participant AuthManager
+    participant LoginDialog
+    participant AuthController
+    participant AuthService
     participant MainWindow
-    participant Dashboard
 
-    User->>AuthManager: login()
-    AuthManager-->>MainWindow: loginSucceeded()
-    MainWindow->>Dashboard: show()
+    User->>LoginDialog: 输入凭据
+    LoginDialog->>AuthController: handleStudentLogin()
+    AuthController->>AuthService: studentLogin()
+    AuthService-->>AuthController: LoginResult
+    AuthController-->>MainWindow: loginSuccess()
+    MainWindow->>MainWindow: 切换到对应面板
 ```
 
-## AuthManager 信号
+## AuthController 信号
 
-### loginSucceeded
+### loginSuccess
 
 登录成功时发射。
 
 ```cpp
-void loginSucceeded(UserRole role, const QString& cardId);
+void loginSuccess(UserRole role, const QString& cardId, const QString& userName);
 ```
 
 **参数**：
 
 - `role` - 用户角色（Student/Admin）
 - `cardId` - 卡号（管理员登录时为空）
+- `userName` - 用户名称
 
 **典型连接**：
 
 ```cpp
-connect(authManager, &AuthManager::loginSucceeded,
-        this, &MainWindow::onLoginSucceeded);
+connect(m_authController, &AuthController::loginSuccess,
+        this, &MainWindow::onLoginSuccess);
 ```
 
 ### loginFailed
@@ -45,50 +50,60 @@ connect(authManager, &AuthManager::loginSucceeded,
 登录失败时发射。
 
 ```cpp
-void loginFailed(LoginResult result);
+void loginFailed(LoginResult result, const QString& message);
 ```
 
 **参数**：
 
-- `result` - 失败原因
+- `result` - 失败原因枚举
+- `message` - 错误消息
 
 **典型连接**：
 
 ```cpp
-connect(authManager, &AuthManager::loginFailed,
+connect(m_authController, &AuthController::loginFailed,
         loginDialog, &LoginDialog::onLoginFailed);
 ```
 
-### loggedOut
+### logoutSuccess
 
 用户登出时发射。
 
 ```cpp
-void loggedOut();
+void logoutSuccess();
 ```
 
 **典型连接**：
 
 ```cpp
-connect(authManager, &AuthManager::loggedOut,
-        this, &MainWindow::onLoggedOut);
+connect(m_authController, &AuthController::logoutSuccess,
+        this, &MainWindow::onLogoutSuccess);
 ```
 
-## CardManager 信号
+### passwordError / cardFrozen
 
-### cardsChanged
+密码错误或卡被冻结时发射。
+
+```cpp
+void passwordError(int remainingAttempts);
+void cardFrozen(const QString& cardId);
+```
+
+## CardController 信号
+
+### cardsUpdated
 
 卡数据发生变更时发射（添加、删除、批量更新）。
 
 ```cpp
-void cardsChanged();
+void cardsUpdated();
 ```
 
 **典型连接**：
 
 ```cpp
-connect(cardManager, &CardManager::cardsChanged,
-        adminDashboard, &AdminDashboard::refreshCardList);
+connect(m_cardController, &CardController::cardsUpdated,
+        adminPanel, &AdminPanel::refreshCardList);
 ```
 
 ### cardUpdated
@@ -106,18 +121,36 @@ void cardUpdated(const QString& cardId);
 **典型连接**：
 
 ```cpp
-connect(cardManager, &CardManager::cardUpdated,
-        studentDashboard, &StudentDashboard::refreshCardInfo);
+connect(m_cardController, &CardController::cardUpdated,
+        studentPanel, &StudentPanel::refreshCardInfo);
 ```
 
-## RecordManager 信号
+### rechargeSuccess / rechargeFailed
 
-### recordsChanged
+充值操作结果。
+
+```cpp
+void rechargeSuccess(const QString& cardId, double newBalance);
+void rechargeFailed(const QString& message);
+```
+
+### cardCreated / cardCreateFailed
+
+创建卡操作结果。
+
+```cpp
+void cardCreated(const QString& cardId);
+void cardCreateFailed(const QString& message);
+```
+
+## RecordController 信号
+
+### recordsUpdated
 
 记录数据变更时发射。
 
 ```cpp
-void recordsChanged(const QString& cardId);
+void recordsUpdated(const QString& cardId);
 ```
 
 **参数**：
@@ -127,48 +160,53 @@ void recordsChanged(const QString& cardId);
 **典型连接**：
 
 ```cpp
-connect(recordManager, &RecordManager::recordsChanged,
+connect(m_recordController, &RecordController::recordsUpdated,
         recordTable, &RecordTableWidget::refresh);
 ```
 
-### sessionStarted
+### sessionStarted / sessionStartFailed
 
-上机开始时发射。
+上机开始结果。
 
 ```cpp
 void sessionStarted(const QString& cardId, const QString& location);
+void sessionStartFailed(const QString& message);
 ```
 
 **参数**：
 
 - `cardId` - 卡号
 - `location` - 上机地点
+- `message` - 错误消息
 
 **典型连接**：
 
 ```cpp
-connect(recordManager, &RecordManager::sessionStarted,
-        studentDashboard, &StudentDashboard::onSessionStarted);
+connect(m_recordController, &RecordController::sessionStarted,
+        studentPanel, &StudentPanel::onSessionStarted);
 ```
 
-### sessionEnded
+### sessionEnded / sessionEndFailed
 
-上机结束时发射。
+上机结束结果。
 
 ```cpp
-void sessionEnded(const QString& cardId, double cost);
+void sessionEnded(const QString& cardId, double cost, int duration);
+void sessionEndFailed(const QString& message);
 ```
 
 **参数**：
 
 - `cardId` - 卡号
 - `cost` - 本次费用
+- `duration` - 上机时长（分钟）
+- `message` - 错误消息
 
 **典型连接**：
 
 ```cpp
-connect(recordManager, &RecordManager::sessionEnded,
-        studentDashboard, &StudentDashboard::onSessionEnded);
+connect(m_recordController, &RecordController::sessionEnded,
+        studentPanel, &StudentPanel::onSessionEnded);
 ```
 
 ## 信号连接示例
@@ -177,65 +215,71 @@ connect(recordManager, &RecordManager::sessionEnded,
 
 ```cpp
 void MainWindow::setupConnections() {
+    auto* authController = m_mainController->authController();
+
     // 登录成功
-    connect(m_authManager, &AuthManager::loginSucceeded,
-            this, [this](UserRole role, const QString& cardId) {
+    connect(authController, &AuthController::loginSuccess,
+            this, [this](UserRole role, const QString& cardId, const QString& userName) {
         if (role == UserRole::Admin) {
-            showAdminDashboard();
+            showAdminPanel();
         } else {
-            showStudentDashboard(cardId);
+            showStudentPanel(cardId);
         }
     });
 
     // 登出
-    connect(m_authManager, &AuthManager::loggedOut,
+    connect(authController, &AuthController::logoutSuccess,
             this, &MainWindow::showWelcomePage);
-
-    // 卡数据变更
-    connect(m_cardManager, &CardManager::cardsChanged,
-            m_adminDashboard, &AdminDashboard::refreshCardList);
 }
 ```
 
-### AdminDashboard 中的连接
+### AdminPanel 中的连接
 
 ```cpp
-void AdminDashboard::setupConnections() {
+void AdminPanel::setupConnections() {
     // 充值按钮
     connect(m_rechargeBtn, &ElaPushButton::clicked,
-            this, &AdminDashboard::onRechargeClicked);
+            this, &AdminPanel::onRechargeClicked);
 
     // 卡选择变化
-    connect(m_cardTable, &QTableWidget::itemSelectionChanged,
-            this, &AdminDashboard::onCardSelectionChanged);
+    connect(m_cardTable->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, &AdminPanel::onCardSelectionChanged);
 
-    // 上机结束更新统计
-    connect(m_recordManager, &RecordManager::sessionEnded,
-            this, &AdminDashboard::updateStatistics);
+    // 卡数据变更
+    connect(m_cardController, &CardController::cardsUpdated,
+            this, &AdminPanel::refreshCardList);
+
+    // 充值结果
+    connect(m_cardController, &CardController::rechargeSuccess,
+            this, &AdminPanel::onRechargeSuccess);
 }
 ```
 
-### StudentDashboard 中的连接
+### StudentPanel 中的连接
 
 ```cpp
-void StudentDashboard::setupConnections() {
+void StudentPanel::setupConnections() {
     // 开始上机
     connect(m_startBtn, &ElaPushButton::clicked,
-            this, &StudentDashboard::onStartSession);
+            this, &StudentPanel::onStartSession);
 
     // 结束上机
     connect(m_endBtn, &ElaPushButton::clicked,
-            this, &StudentDashboard::onEndSession);
+            this, &StudentPanel::onEndSession);
 
     // 会话结束更新界面
-    connect(m_recordManager, &RecordManager::sessionEnded,
-            this, [this](const QString& cardId, double cost) {
+    connect(m_recordController, &RecordController::sessionEnded,
+            this, [this](const QString& cardId, double cost, int duration) {
         if (cardId == m_currentCardId) {
             refreshSessionStatus();
             refreshStatistics();
-            showCostMessage(cost);
+            showCostMessage(cost, duration);
         }
     });
+
+    // 记录更新
+    connect(m_recordController, &RecordController::recordsUpdated,
+            this, &StudentPanel::refreshRecordTable);
 }
 ```
 
@@ -245,31 +289,36 @@ void StudentDashboard::setupConnections() {
 
 ```mermaid
 flowchart LR
-    A[LoginDialog] -->|login| B[AuthManager]
-    B -->|loginSucceeded| C[MainWindow]
+    A[LoginDialog] -->|handleLogin| B[AuthController]
+    B -->|studentLogin| C[AuthService]
+    C -->|verifyPassword| D[CardService]
+    B -->|loginSuccess| E[MainWindow]
     B -->|loginFailed| A
-    C -->|show| D[Dashboard]
+    E -->|show| F[Panel]
 ```
 
 ### 充值流程
 
 ```mermaid
 flowchart LR
-    A[AdminDashboard] -->|recharge| B[CardManager]
-    B -->|cardUpdated| C[AdminDashboard]
-    B -->|save| D[StorageManager]
+    A[AdminPanel] -->|handleRecharge| B[CardController]
+    B -->|recharge| C[CardService]
+    C -->|saveAll| D[StorageManager]
+    B -->|rechargeSuccess| A
+    B -->|cardsUpdated| A
 ```
 
 ### 上机流程
 
 ```mermaid
 flowchart LR
-    A[StudentDashboard] -->|startSession| B[RecordManager]
+    A[StudentPanel] -->|handleStartSession| B[RecordController]
+    B -->|startSession| C[RecordService]
     B -->|sessionStarted| A
-    A -->|endSession| B
+    A -->|handleEndSession| B
+    B -->|endSession| C
+    C -->|deduct| D[CardService]
     B -->|sessionEnded| A
-    B -->|deduct| C[CardManager]
-    C -->|cardUpdated| A
 ```
 
 ## 下一步

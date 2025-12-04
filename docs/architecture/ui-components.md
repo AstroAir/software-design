@@ -10,23 +10,21 @@
 graph TB
     MW[MainWindow] --> LD[LoginDialog]
     MW --> RD[RegisterDialog]
-    MW --> AD[AdminDashboard]
-    MW --> SD[StudentDashboard]
-    AD --> ReD[RechargeDialog]
-    AD --> SW[StatisticsWidget]
-    AD --> RTW[RecordTableWidget]
-    SD --> RTW
+    MW --> AP[AdminPanel]
+    MW --> SP[StudentPanel]
+    AP --> ReD[RechargeDialog]
+    AP --> SW[StatisticsWidget]
+    AP --> RTW[RecordTableWidget]
+    SP --> RTW
 ```
 
 ## MainWindow
 
-主窗口类，继承自 `ElaWindow`。
+主窗口类，继承自 `ElaWindow`，位于 `src/view/MainWindow.h`。
 
 ### 功能
 
-- 侧边栏导航管理
-- 页面切换控制
-- 搜索建议框
+- 页面堆叠切换（欢迎页/管理员面板/学生面板）
 - 登录/登出状态管理
 - 关于对话框
 
@@ -34,54 +32,42 @@ graph TB
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
-│  标题栏  │  搜索框  │  窗口控制按钮                        │
-├─────┬───────────────────────────────────────────────────┤
-│     │                                                   │
-│ 导  │                                                   │
-│ 航  │              内容区域                              │
-│ 栏  │         (欢迎页/管理员面板/学生面板)                │
-│     │                                                   │
-│     │                                                   │
-├─────┴───────────────────────────────────────────────────┤
-│  状态栏                                                  │
+│  标题栏  │  窗口控制按钮                                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│                                                         │
+│              内容区域 (QStackedWidget)                    │
+│         (欢迎页/管理员面板/学生面板)                      │
+│                                                         │
+│                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ### 关键成员
 
 ```cpp
-// 业务管理器
-CardManager* m_cardManager;
-RecordManager* m_recordManager;
-AuthManager* m_authManager;
+// 主控制器
+MainController* m_mainController;
 
 // 子界面
 LoginDialog* m_loginDialog;
-AdminDashboard* m_adminDashboard;
-StudentDashboard* m_studentDashboard;
+AdminPanel* m_adminPanel;
+StudentPanel* m_studentPanel;
+QWidget* m_welcomePage;
 
-// 搜索
-ElaSuggestBox* m_suggestBox;
+// 页面堆叠容器
+QStackedWidget* m_stackedWidget;
 ```
-
-### 导航项
-
-| 导航项 | 图标  | 目标页面   |
-| ------ | ----- | ---------- |
-| 主页   | Home  | 欢迎页     |
-| 管理员 | Admin | 管理员面板 |
-| 学生   | User  | 学生面板   |
-| 关于   | Info  | 关于对话框 |
 
 ## LoginDialog
 
-登录对话框，继承自 `ElaDialog`。
+登录对话框，继承自 `ElaDialog`，位于 `src/view/dialogs/LoginDialog.h`。
 
 ### 功能
 
 - 角色选择（学生/管理员）
 - 凭据输入
-- 登录验证
+- 登录验证（通过 AuthController）
 - 错误提示
 - 跳转注册
 
@@ -104,13 +90,14 @@ ElaSuggestBox* m_suggestBox;
 
 ## RegisterDialog
 
-注册对话框，继承自 `ElaDialog`。
+注册对话框，继承自 `ElaDialog`，位于 `src/view/dialogs/RegisterDialog.h`。
 
 ### 功能
 
 - 新卡信息录入
 - 卡号自动生成
 - 密码确认验证
+- 通过 CardController 创建新卡
 
 ### 输入字段
 
@@ -122,23 +109,23 @@ ElaSuggestBox* m_suggestBox;
 | 密码     | 是   | 登录密码             |
 | 确认密码 | 是   | 密码确认             |
 
-## AdminDashboard
+## AdminPanel
 
-管理员控制面板，继承自 `QWidget`。
+管理员控制面板，继承自 `QWidget`，位于 `src/view/panels/AdminPanel.h`。
 
 ### 功能
 
 - 卡列表展示和搜索
 - 实时统计信息
-- 卡片管理操作
-- 数据导入导出
+- 卡片管理操作（通过 CardController）
+- 数据导入导出（通过 MainController）
 - 统计报表
 
 ### 布局结构
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
-│  搜索框  │  当日收入  │  总卡数  │  在线人数  │  日期选择  │
+│  搜索框  │  当日收入  │  总卡数  │  在线人数           │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │                    卡列表表格                            │
@@ -148,6 +135,21 @@ ElaSuggestBox* m_suggestBox;
 │ 充值 │ 挂失 │ 解挂 │ 解冻 │ 重置密码 │ 添加新卡 │ 统计   │
 │ 导出 │ 导入 │ 生成模拟数据 │ 修改管理员密码 │ 退出登录   │
 └─────────────────────────────────────────────────────────┘
+```
+
+### 关键成员
+
+```cpp
+// 控制器
+MainController* m_mainController;
+CardController* m_cardController;
+RecordController* m_recordController;
+AuthController* m_authController;
+
+// UI 组件
+ElaTableView* m_cardTable;
+QStandardItemModel* m_cardModel;
+ElaLineEdit* m_searchEdit;
 ```
 
 ### 表格列
@@ -178,14 +180,14 @@ ElaSuggestBox* m_suggestBox;
 | 修改管理员密码 | 修改密码       | 无             |
 | 退出登录       | 登出           | 无             |
 
-## StudentDashboard
+## StudentPanel
 
-学生控制面板，继承自 `QWidget`。
+学生控制面板，继承自 `QWidget`，位于 `src/view/panels/StudentPanel.h`。
 
 ### 功能
 
 - 卡片信息展示
-- 上机状态管理
+- 上机状态管理（通过 RecordController）
 - 历史记录查询
 - 使用统计
 
@@ -212,6 +214,20 @@ ElaSuggestBox* m_suggestBox;
 └─────────────────────────────────────────────────────────┘
 ```
 
+### 关键成员
+
+```cpp
+// 控制器
+CardController* m_cardController;
+RecordController* m_recordController;
+
+// 状态
+QString m_currentCardId;
+
+// UI 组件
+RecordTableWidget* m_recordTable;
+```
+
 ### 信息展示
 
 | 区域     | 内容                               |
@@ -223,13 +239,13 @@ ElaSuggestBox* m_suggestBox;
 
 ## RechargeDialog
 
-充值对话框，继承自 `ElaContentDialog`。
+充值对话框，继承自 `ElaContentDialog`，位于 `src/view/dialogs/RechargeDialog.h`。
 
 ### 功能
 
 - 显示卡片当前信息
 - 输入充值金额
-- 确认充值操作
+- 确认充值操作（通过 CardController）
 
 ### 显示信息
 
@@ -240,12 +256,12 @@ ElaSuggestBox* m_suggestBox;
 
 ## StatisticsWidget
 
-统计报表组件，继承自 `QWidget`。
+统计报表组件，继承自 `QWidget`，位于 `src/view/widgets/StatisticsWidget.h`。
 
 ### 功能
 
 - 日期选择
-- 当日统计汇总
+- 当日统计汇总（通过 RecordController）
 - 详细记录列表
 
 ### 统计项
@@ -258,7 +274,7 @@ ElaSuggestBox* m_suggestBox;
 
 ## RecordTableWidget
 
-上机记录表格组件，继承自 `QWidget`。
+上机记录表格组件，继承自 `QWidget`，位于 `src/view/widgets/RecordTableWidget.h`。
 
 ### 功能
 

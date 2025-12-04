@@ -21,13 +21,19 @@
 
 ### 技术亮点
 
-| 特性               | 说明                 |
-| ------------------ | -------------------- |
-| **C++20**          | 使用现代 C++ 特性    |
-| **Qt6**            | 跨平台 GUI 框架      |
-| **ElaWidgetTools** | Fluent Design 组件库 |
-| **JSON 存储**      | 轻量级数据持久化     |
-| **CMake Presets**  | 标准化构建配置       |
+- **现代 C++20** - 使用最新语言特性
+- **Qt6 框架** - 跨平台 GUI 开发
+- **Fluent Design** - 基于 ElaWidgetTools 的现代 UI
+- **标准 MVC 架构** - View/Controller/Model 分层清晰
+- **JSON 存储** - 轻量级数据持久化
+- **CMake Presets**  - 标准化构建配置
+
+## 快速开始
+
+1. [安装指南](development/environment.md) - 配置开发环境
+2. [架构概览](architecture/overview.md) - 了解 MVC 系统设计
+3. [MVC 模块](architecture/core-modules.md) - 深入 Model/Controller 层
+4. [UI 组件](architecture/ui-components.md) - View 层组件
 
 ## 快速导航
 
@@ -56,6 +62,8 @@
     完整的类和接口文档
 
     [:octicons-arrow-right-24: 数据模型](api/data-models.md)
+    [:octicons-arrow-right-24: 服务和控制器](api/managers.md)
+    [:octicons-arrow-right-24: 信号与槽](api/signals-slots.md)
 
 - :material-code-tags:{ .lg .middle } **开发指南**
 
