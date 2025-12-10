@@ -13,6 +13,7 @@
 - [核心类详解](#核心类详解)
 - [UI 组件详解](#ui-组件详解)
 - [构建指南](#构建指南)
+- [打包发布](#打包发布)
 - [使用说明](#使用说明)
 - [API 参考](#api-参考)
 - [开发说明](#开发说明)
@@ -677,6 +678,37 @@ make -j$(nproc)
 ### 运行程序
 
 构建完成后，可执行文件位于 `build/` 目录（或对应的 preset 输出目录）。首次运行时会自动在可执行文件同级目录创建 `data/` 文件夹并生成示例数据。
+
+### 打包发布
+
+#### 使用打包脚本（MinGW64）
+
+项目提供了自动化打包脚本，收集所有依赖并创建可分发的安装包：
+
+```powershell
+# 运行打包脚本
+powershell -ExecutionPolicy Bypass -File scripts\package_mingw.ps1 -Clean
+
+# 输出结果
+# - package/                              # 包含所有文件的目录
+# - CampusCardSystem-Windows-MinGW64.zip  # 压缩包（约 35MB）
+```
+
+脚本会自动收集：
+
+- **Qt6 库和插件** - 通过 windeployqt6 收集
+- **MinGW 运行时** - libgcc, libstdc++, libwinpthread 等
+- **ICU 国际化库** - libicudt, libicuin, libicuuc
+- **其他依赖** - zlib, libpng, freetype, harfbuzz 等
+- **数据目录** - data/ 目录
+
+#### 验证打包完整性
+
+```powershell
+# 在隔离环境中测试（清除 MinGW PATH）
+$env:PATH = "C:\Windows\System32;C:\Windows"
+.\package\CampusCardSystem.exe
+```
 
 ---
 

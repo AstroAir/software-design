@@ -255,6 +255,149 @@ src/
 | **存储**    | JSON           | 轻量级、易于调试        |
 | **构建**    | CMake          | 跨平台、标准化          |
 
+### C++20 特性应用
+
+本项目充分利用了 C++20 的现代特性：
+
+| 特性 | 应用场景 | 示例 |
+|------|----------|------|
+| **`[[nodiscard]]`** | 返回值不应被忽略的函数 | `[[nodiscard]] bool isUsable() const;` |
+| **`std::optional`** | 可能为空的返回值 | `std::optional<User> currentUser() const;` |
+| **`enum class`** | 强类型枚举 | `enum class CardState { Normal, Lost, Frozen };` |
+| **`constexpr`** | 编译期常量 | `constexpr double COST_PER_HOUR = 1.0;` |
+| **范围 for 循环** | 集合遍历 | `for (const auto& card : cards)` |
+| **结构化绑定** | 解构赋值 | `auto [success, message] = validate();` |
+| **`auto` 类型推导** | 简化类型声明 | `auto it = map.find(key);` |
+
+### Qt6 框架集成
+
+项目使用 Qt6 的核心模块：
+
+```mermaid
+graph LR
+    subgraph Qt6Modules["Qt6 模块"]
+        Core[Qt6::Core]
+        Gui[Qt6::Gui]
+        Widgets[Qt6::Widgets]
+    end
+
+    subgraph Features["使用的功能"]
+        Signals[信号槽机制]
+        JSON[JSON 序列化]
+        DateTime[日期时间处理]
+        Layout[布局管理]
+        Model[Model/View 框架]
+    end
+
+    Core --> Signals
+    Core --> JSON
+    Core --> DateTime
+    Widgets --> Layout
+    Widgets --> Model
+```
+
+**关键 Qt6 特性**：
+
+- **信号槽（Signals & Slots）** - 松耦合的事件通信机制
+- **QJsonDocument/QJsonObject** - 原生 JSON 序列化支持
+- **QDateTime** - 时间处理和格式化
+- **QStandardItemModel** - 表格数据模型
+- **QStackedWidget** - 页面切换容器
+- **Qt Resource System** - 资源文件管理
+
+### ElaWidgetTools UI 组件库
+
+[ElaWidgetTools](https://github.com/AstroAir/ElaWidgetTools) 是一个 Fluent Design 风格的 Qt 组件库。
+
+**使用的组件**：
+
+| 组件 | 用途 | 替代的 Qt 组件 |
+|------|------|----------------|
+| `ElaWindow` | 主窗口框架 | `QMainWindow` |
+| `ElaDialog` | 对话框 | `QDialog` |
+| `ElaContentDialog` | 内容对话框 | `QDialog` |
+| `ElaPushButton` | 按钮 | `QPushButton` |
+| `ElaLineEdit` | 输入框 | `QLineEdit` |
+| `ElaComboBox` | 下拉框 | `QComboBox` |
+| `ElaTableView` | 表格视图 | `QTableView` |
+| `ElaText` | 文本标签 | `QLabel` |
+| `ElaScrollPage` | 滚动页面 | `QScrollArea` |
+| `ElaMessageBar` | 消息提示 | `QMessageBox` |
+| `ElaIconButton` | 图标按钮 | `QToolButton` |
+
+**Fluent Design 特性**：
+
+- 圆角边框和阴影效果
+- 动画过渡效果
+- 亚克力/云母材质背景
+- 现代化配色方案
+- 响应式悬停效果
+
+### JSON 数据存储
+
+使用 Qt 内置的 JSON 模块实现轻量级数据持久化：
+
+```cpp
+// 序列化示例
+QJsonObject Card::toJson() const {
+    return QJsonObject{
+        {"cardId", m_cardId},
+        {"name", m_name},
+        {"studentId", m_studentId},
+        {"balance", m_balance},
+        {"state", static_cast<int>(m_state)},
+        {"password", m_password}
+    };
+}
+
+// 反序列化示例
+Card Card::fromJson(const QJsonObject& json) {
+    Card card;
+    card.m_cardId = json["cardId"].toString();
+    card.m_name = json["name"].toString();
+    card.m_balance = json["balance"].toDouble();
+    card.m_state = static_cast<CardState>(json["state"].toInt());
+    return card;
+}
+```
+
+### CMake 构建系统
+
+项目使用 CMake Presets 实现标准化的跨平台构建：
+
+```mermaid
+graph TB
+    subgraph Presets["CMake Presets"]
+        MSVC[msvc-release]
+        MinGW[mingw-release]
+        Ninja[ninja-mingw-release]
+    end
+
+    subgraph Targets["构建目标"]
+        EXE[CampusCardSystem.exe]
+        DLL[ElaWidgetTools.dll]
+    end
+
+    subgraph Dependencies["依赖"]
+        Qt6[Qt6::Widgets/Core/Gui]
+        Ela[ElaWidgetTools]
+    end
+
+    MSVC --> EXE
+    MinGW --> EXE
+    Ninja --> EXE
+    EXE --> Qt6
+    EXE --> Ela
+    Ela --> DLL
+```
+
+**CMake 配置特性**：
+
+- `CMAKE_CXX_STANDARD 20` - C++20 标准
+- `CMAKE_AUTOMOC ON` - 自动处理 Qt MOC
+- `CMAKE_AUTORCC ON` - 自动处理资源文件
+- `CMAKE_EXPORT_COMPILE_COMMANDS ON` - 生成 clangd 配置
+
 ## 扩展性设计
 
 系统预留了以下扩展点：

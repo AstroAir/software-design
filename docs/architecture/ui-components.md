@@ -294,6 +294,71 @@ RecordTableWidget* m_recordTable;
 | 地点     | `location`        | 文本          |
 | 状态     | `state`           | 上机中/已结束 |
 
+## UI 设计原则
+
+### Fluent Design 应用
+
+本项目遵循 Microsoft Fluent Design 设计语言的核心原则：
+
+| 原则 | 实现方式 |
+|------|----------|
+| **光感 (Light)** | 悬停高亮、焦点指示 |
+| **深度 (Depth)** | 阴影效果、层次分明 |
+| **动效 (Motion)** | 平滑过渡动画 |
+| **材质 (Material)** | 亚克力/云母背景效果 |
+| **缩放 (Scale)** | 响应式布局适配 |
+
+### 交互设计
+
+**反馈机制**：
+
+- **即时反馈** - 操作后立即显示结果（ElaMessageBar）
+- **状态指示** - 表格行颜色区分卡状态
+- **进度提示** - 长时间操作显示加载状态
+- **错误处理** - 清晰的错误信息和恢复建议
+
+**一致性**：
+
+- 统一的按钮样式和间距
+- 一致的对话框结构
+- 标准化的表格布局
+- 统一的颜色语义（绿色=正常、黄色=挂失、红色=冻结）
+
+### 信号槽连接
+
+View 层与 Controller 层通过信号槽机制通信：
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant View
+    participant Controller
+    participant Service
+
+    User->>View: 用户操作
+    View->>Controller: handleXxx()
+    Controller->>Service: 业务方法
+    Service-->>Controller: 返回结果
+    Controller-->>View: xxxSuccess/xxxFailed 信号
+    View->>View: 更新 UI
+```
+
+**示例：充值流程**
+
+```cpp
+// AdminPanel 中连接信号
+connect(m_cardController, &CardController::rechargeSuccess,
+        this, [this](const QString& cardId, double newBalance) {
+    refreshCardList();
+    ElaMessageBar::success("充值成功", QString("新余额: ¥%1").arg(newBalance), this);
+});
+
+connect(m_cardController, &CardController::rechargeFailed,
+        this, [this](const QString& message) {
+    ElaMessageBar::error("充值失败", message, this);
+});
+```
+
 ## 下一步
 
 - [数据模型](../api/data-models.md) - 查看 JSON 格式

@@ -1,0 +1,32 @@
+[
+    {
+        "balance": 100,
+        "cardId": "C001",
+        "loginAttempts": 0,
+        "name": "张三",
+        "password": "123456",
+        "state": 0,
+        "studentId": "B17010101",
+        "totalRecharge": 100
+    },
+    {
+        "balance": 50,
+        "cardId": "C002",
+        "loginAttempts": 0,
+        "name": "李四",
+        "password": "123456",
+        "state": 0,
+        "studentId": "B17010102",
+        "totalRecharge": 50
+    },
+    {
+        "balance": 200,
+        "cardId": "C003",
+        "loginAttempts": 0,
+        "name": "王五",
+        "password": "123456",
+        "state": 0,
+        "studentId": "B17010103",
+        "totalRecharge": 200
+    }
+]

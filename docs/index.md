@@ -30,10 +30,12 @@
 
 ## 快速开始
 
-1. [安装指南](development/environment.md) - 配置开发环境
-2. [架构概览](architecture/overview.md) - 了解 MVC 系统设计
-3. [MVC 模块](architecture/core-modules.md) - 深入 Model/Controller 层
-4. [UI 组件](architecture/ui-components.md) - View 层组件
+1. [安装指南](getting-started/installation.md) - 构建项目
+2. [使用教程](getting-started/usage.md) - 系统使用方法
+3. [打包指南](getting-started/packaging.md) - 创建可分发安装包
+4. [架构概览](architecture/overview.md) - 了解 MVC 系统设计
+5. [MVC 模块](architecture/core-modules.md) - 深入 Model/Controller 层
+6. [UI 组件](architecture/ui-components.md) - View 层组件
 
 ## 快速导航
 

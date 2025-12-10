@@ -2,6 +2,36 @@
 
 本文档记录项目的版本更新历史。
 
+## [1.1.0] - 2025-12-10
+
+### 新增
+
+- **完整的打包支持**
+  - 新增 `scripts/package_mingw.ps1` 自动化打包脚本
+  - 支持 MSYS2 MinGW64 环境下的完整打包
+  - 自动收集 Qt6 库、插件和 MinGW 运行时依赖
+  - 递归检查并补充间接 DLL 依赖
+  - 创建 ZIP 压缩包（约 35MB）
+
+- **GitHub Actions 打包支持**
+  - 新增 `build-windows-mingw` 工作流
+  - 使用 `msys2/setup-msys2` action 配置环境
+  - 自动收集所有依赖并上传 artifact
+
+### 文档更新
+
+- 新增 [打包指南](getting-started/packaging.md) 详细文档
+- 更新 README.md 添加打包发布章节
+- 更新开发环境文档添加打包说明
+
+### 改进
+
+- 优化 GitHub Actions 工作流
+  - MSVC 构建现在也会收集 Qt 依赖
+  - 统一 artifact 命名规范
+
+---
+
 ## [1.0.0] - 2024-12-03
 
 ### 新增

@@ -261,3 +261,11 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
         )
     endif()
 endif()
+
+# ============================================================================
+# 单元测试（可选）
+# ============================================================================
+option(BUILD_TESTS "Build unit tests" ON)
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

@@ -1,0 +1,13 @@
+[
+    {
+        "cardId": "C001",
+        "cost": 1,
+        "date": "2025-12-10",
+        "durationMinutes": 60,
+        "endTime": "2025-12-10T08:49:05",
+        "location": "机房A101",
+        "recordId": "5790dc6e-f5aa-435d-a43e-23c11cb90296",
+        "startTime": "2025-12-10T07:49:05",
+        "state": 0
+    }
+]

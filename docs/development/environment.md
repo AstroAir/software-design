@@ -205,7 +205,40 @@
 }
 ```
 
+## 打包发布
+
+### MinGW64 打包
+
+项目提供了自动化打包脚本 `scripts/package_mingw.ps1`：
+
+```powershell
+# 基本用法
+powershell -ExecutionPolicy Bypass -File scripts\package_mingw.ps1
+
+# 清理并重新打包
+powershell -ExecutionPolicy Bypass -File scripts\package_mingw.ps1 -Clean
+```
+
+脚本功能：
+
+- 使用 `windeployqt6` 收集 Qt 依赖
+- 复制 MinGW 运行时 DLL
+- 递归检查并补充间接依赖
+- 创建 ZIP 压缩包
+
+详细说明请参阅 [打包指南](../getting-started/packaging.md)。
+
+### GitHub Actions 自动打包
+
+项目的 CI/CD 工作流已配置自动打包功能，支持：
+
+- **MSVC 构建** - 使用 Visual Studio 2022
+- **MinGW64 构建** - 使用 MSYS2 MinGW64
+
+构建产物可在 GitHub Actions 的 Artifacts 中下载。
+
 ## 下一步
 
 - [代码规范](code-style.md) - 了解编码规范
 - [贡献指南](contributing.md) - 参与项目开发
+- [打包指南](../getting-started/packaging.md) - 创建可分发安装包

@@ -66,6 +66,7 @@ nav:
   - 快速开始:
       - 安装指南: getting-started/installation.md
       - 使用教程: getting-started/usage.md
+      - 打包指南: getting-started/packaging.md
   - 架构设计:
       - 系统概述: architecture/overview.md
       - 核心模块: architecture/core-modules.md

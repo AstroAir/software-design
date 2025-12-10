@@ -7,8 +7,9 @@ on:
     branches: [ main ]
 
 jobs:
-  build-windows:
+  build-windows-msvc:
     runs-on: windows-latest
+    name: Windows (MSVC)
 
     steps:
     - name: Checkout
@@ -31,11 +32,106 @@ jobs:
     - name: Build
       run: cmake --build build --config Release
 
+    - name: Deploy Qt dependencies
+      run: |
+        mkdir -p package
+        cp build/Release/CampusCardSystem.exe package/
+        cp build/Release/ElaWidgetTools.dll package/
+        windeployqt --release --no-translations --no-system-d3d-compiler --no-opengl-sw package/CampusCardSystem.exe
+        cp -r data package/
+      shell: bash
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: CampusCardSystem-Windows
-        path: build/Release/*.exe
+        name: CampusCardSystem-Windows-MSVC
+        path: package/
+
+  build-windows-mingw:
+    runs-on: windows-latest
+    name: Windows (MinGW64)
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        install: >-
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-qt6-base
+          mingw-w64-x86_64-qt6-svg
+          mingw-w64-x86_64-qt6-tools
+
+    - name: Configure CMake
+      shell: msys2 {0}
+      run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      shell: msys2 {0}
+      run: cmake --build build
+
+    - name: Package with windeployqt
+      shell: msys2 {0}
+      run: |
+        mkdir -p package
+        cp build/CampusCardSystem.exe package/
+        cp build/ElaWidgetTools.dll package/
+        windeployqt6 --release --no-translations --no-system-d3d-compiler --no-opengl-sw package/CampusCardSystem.exe
+        
+        # Copy MinGW runtime DLLs
+        MINGW_BIN="/mingw64/bin"
+        DLLS=(
+          "libgcc_s_seh-1.dll"
+          "libstdc++-6.dll"
+          "libwinpthread-1.dll"
+          "zlib1.dll"
+          "libpng16-16.dll"
+          "libjpeg-8.dll"
+          "libfreetype-6.dll"
+          "libharfbuzz-0.dll"
+          "libbz2-1.dll"
+          "libpcre2-16-0.dll"
+          "libdouble-conversion.dll"
+          "libzstd.dll"
+          "libbrotlidec.dll"
+          "libbrotlicommon.dll"
+          "libglib-2.0-0.dll"
+          "libintl-8.dll"
+          "libiconv-2.dll"
+          "libgraphite2.dll"
+          "libmd4c.dll"
+          "libb2-1.dll"
+          "libpcre2-8-0.dll"
+        )
+        for dll in "${DLLS[@]}"; do
+          if [ -f "$MINGW_BIN/$dll" ]; then
+            cp "$MINGW_BIN/$dll" package/
+          fi
+        done
+        
+        # Copy ICU libraries (versioned)
+        for icu in $MINGW_BIN/libicu*.dll; do
+          if [ -f "$icu" ]; then
+            cp "$icu" package/
+          fi
+        done
+        
+        # Copy data directory
+        cp -r data package/
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: CampusCardSystem-Windows-MinGW64
+        path: package/
 
   build-linux:
     runs-on: ubuntu-latest
