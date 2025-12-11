@@ -5,6 +5,7 @@
  * @date 2024
  */
 
+#include "model/entities/Card.h"
 #include "model/entities/Record.h"
 #include "model/repositories/StorageManager.h"
 #include "model/services/RecordService.h"
@@ -28,6 +29,14 @@ protected:
         testDataPath = tempDir.path() + "/test_data";
         StorageManager::instance().setDataPath(testDataPath);
         StorageManager::instance().initializeDataDirectory();
+
+        // 创建测试用的卡数据（RecordService 需要卡号到学号的映射）
+        // 根据文档要求，记录文件以学号命名（如 B17010101.txt）
+        QList<Card> testCards;
+        testCards.append(Card("C001", "张三", "B17010101", 100.0));
+        testCards.append(Card("C002", "李四", "B17010102", 100.0));
+        testCards.append(Card("C999", "测试用户", "B99999999", 100.0));
+        StorageManager::instance().saveAllCards(testCards);
 
         recordService = new RecordService();
         recordService->initialize();

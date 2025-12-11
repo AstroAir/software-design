@@ -129,7 +129,7 @@ software-design/
 │   ├── cards.json                  # 校园卡数据
 │   ├── admin.json                  # 管理员密码配置
 │   └── records/                    # 上机记录目录
-│       └── <卡号>.json             # 每张卡的上机记录
+│       └── <学号>.txt              # 每个学生的上机记录（如 B17010101.txt）
 │
 └── third_party/
     └── ElaWidgetTools/             # UI 组件库（Git 子模块）
@@ -419,16 +419,16 @@ data/
 ├── cards.json          # 所有校园卡
 ├── admin.json          # 管理员密码
 └── records/
-    ├── C001.json       # C001 的上机记录
-    ├── C002.json       # C002 的上机记录
-    └── ...
+    ├── B17010101.txt   # 学号 B17010101 的上机记录
+    ├── B17010102.txt   # 学号 B17010102 的上机记录
+    └── ...             # 每个学生对应一个文件
 ```
 
 **主要方法**：
 
 - `instance()` - 获取单例实例
 - `loadAllCards()` / `saveAllCards()` - 卡数据读写
-- `loadRecords(cardId)` / `saveRecords(cardId, records)` - 记录读写
+- `loadRecords(studentId)` / `saveRecords(studentId, records)` - 记录读写（以学号命名文件）
 - `loadAdminPassword()` / `saveAdminPassword()` - 管理员密码
 - `initializeDataDirectory()` - 初始化数据目录
 - `createSampleData()` - 创建示例数据
@@ -750,7 +750,7 @@ $env:PATH = "C:\Windows\System32;C:\Windows"
 |------|------|
 | `data/cards.json` | 所有校园卡信息（卡号、姓名、学号、余额、状态、密码等） |
 | `data/admin.json` | 管理员密码 |
-| `data/records/<卡号>.json` | 每张卡的上机记录列表 |
+| `data/records/<学号>.txt` | 每个学生的上机记录列表（如 B17010101.txt） |
 
 - 所有数据以 **JSON 格式**存储，便于查看和调试
 - 程序首次运行会自动创建示例数据
@@ -801,7 +801,7 @@ $env:PATH = "C:\Windows\System32;C:\Windows"
 }
 ```
 
-#### records/C001.json - 上机记录
+#### records/B17010101.txt - 上机记录（以学号命名）
 
 ```json
 [

@@ -19,28 +19,65 @@ namespace CampusCard {
 RecordService::RecordService(QObject* parent) : QObject(parent) {}
 
 void RecordService::initialize() {
-    // 加载所有卡的记录
-    m_records = StorageManager::instance().loadAllRecords();
+    // 加载所有卡数据，建立卡号到学号的映射
+    QList<Card> cards = StorageManager::instance().loadAllCards();
+    m_cardToStudentId.clear();
+    for (const auto& card : cards) {
+        m_cardToStudentId[card.cardId()] = card.studentId();
+    }
+
+    // 加载所有记录（文件以学号命名，但内存中以卡号索引）
+    QMap<QString, QList<Record>> allRecords = StorageManager::instance().loadAllRecords();
+    m_records.clear();
     m_activeSessions.clear();
 
-    // 检查是否有未结束的会话
-    for (auto it = m_records.begin(); it != m_records.end(); ++it) {
-        for (const auto& record : it.value()) {
-            if (record.isOnline()) {
-                m_activeSessions[it.key()] = record.recordId();
+    // 将学号索引的记录转换为卡号索引
+    for (const auto& card : cards) {
+        QString studentId = card.studentId();
+        QString cardId = card.cardId();
+        if (allRecords.contains(studentId)) {
+            m_records[cardId] = allRecords[studentId];
+            // 检查是否有未结束的会话
+            for (const auto& record : m_records[cardId]) {
+                if (record.isOnline()) {
+                    m_activeSessions[cardId] = record.recordId();
+                }
             }
         }
     }
 }
 
 void RecordService::loadRecordsForCard(const QString& cardId) {
-    m_records[cardId] = StorageManager::instance().loadRecords(cardId);
+    QString studentId = getStudentIdByCardId(cardId);
+    if (!studentId.isEmpty()) {
+        m_records[cardId] = StorageManager::instance().loadRecords(studentId);
+    }
 }
 
 void RecordService::saveRecordsForCard(const QString& cardId) {
     if (m_records.contains(cardId)) {
-        StorageManager::instance().saveRecords(cardId, m_records[cardId]);
+        QString studentId = getStudentIdByCardId(cardId);
+        if (!studentId.isEmpty()) {
+            // 根据文档要求，记录文件以学号命名（如 B17010101.txt）
+            StorageManager::instance().saveRecords(studentId, m_records[cardId]);
+        }
     }
+}
+
+QString RecordService::getStudentIdByCardId(const QString& cardId) const {
+    if (m_cardToStudentId.contains(cardId)) {
+        return m_cardToStudentId[cardId];
+    }
+    // 如果缓存中没有，尝试从存储中加载
+    Card card = StorageManager::instance().loadCard(cardId);
+    if (!card.cardId().isEmpty()) {
+        return card.studentId();
+    }
+    return QString();
+}
+
+void RecordService::registerCardStudentMapping(const QString& cardId, const QString& studentId) {
+    m_cardToStudentId[cardId] = studentId;
 }
 
 double RecordService::calculateCost(int durationMinutes) const {

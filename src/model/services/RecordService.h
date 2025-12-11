@@ -11,6 +11,7 @@
 #ifndef MODEL_SERVICES_RECORDSERVICE_H
 #define MODEL_SERVICES_RECORDSERVICE_H
 
+#include "model/entities/Card.h"
 #include "model/entities/Record.h"
 #include "model/repositories/StorageManager.h"
 
@@ -50,6 +51,13 @@ public:
      * @brief 初始化，加载所有记录
      */
     void initialize();
+
+    /**
+     * @brief 注册新卡的学号映射（创建新卡时调用）
+     * @param cardId 卡号
+     * @param studentId 学号
+     */
+    void registerCardStudentMapping(const QString& cardId, const QString& studentId);
 
     // ========== 上下机操作 ==========
 
@@ -246,8 +254,16 @@ private:
      */
     [[nodiscard]] double calculateCost(int durationMinutes) const;
 
-    QMap<QString, QList<Record>> m_records;   ///< 卡号到记录列表的映射
+    /**
+     * @brief 根据卡号获取学号
+     * @param cardId 卡号
+     * @return 学号（用于记录文件命名）
+     */
+    [[nodiscard]] QString getStudentIdByCardId(const QString& cardId) const;
+
+    QMap<QString, QList<Record>> m_records;   ///< 卡号到记录列表的映射（内存缓存仍用卡号索引）
     QMap<QString, QString> m_activeSessions;  ///< 卡号到当前活动会话记录ID的映射
+    QMap<QString, QString> m_cardToStudentId; ///< 卡号到学号的映射（用于文件命名）
 };
 
 }  // namespace CampusCard

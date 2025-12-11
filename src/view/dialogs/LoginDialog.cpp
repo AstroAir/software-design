@@ -14,6 +14,7 @@
 #include "ElaMessageBar.h"
 #include "ElaPushButton.h"
 #include "ElaText.h"
+#include "ElaTheme.h"
 
 #include <QFont>
 #include <QGridLayout>
@@ -228,7 +229,8 @@ void LoginDialog::onCardFrozen(const QString& /*cardId*/) {
 void LoginDialog::updateHintLabel(const QString& message, bool isError) {
     m_hintLabel->setText(message);
     if (isError) {
-        m_hintLabel->setStyleSheet(QStringLiteral("color: #E74C3C;"));
+        QColor errorColor = ElaThemeColor(eTheme->getThemeMode(), StatusDanger);
+        m_hintLabel->setStyleSheet(QStringLiteral("color: %1;").arg(errorColor.name()));
     } else {
         m_hintLabel->setStyleSheet(QString());
     }

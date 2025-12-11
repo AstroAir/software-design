@@ -34,6 +34,14 @@ bool MainController::initialize(const QString& dataPath) {
     m_cardController = new CardController(m_cardService, this);
     m_recordController = new RecordController(m_recordService, m_cardService, this);
 
+    // 连接信号：创建新卡时更新 RecordService 的卡号到学号映射
+    connect(m_cardService, &CardService::cardCreated, this, [this](const QString& cardId) {
+        Card card = m_cardService->findCard(cardId);
+        if (!card.cardId().isEmpty()) {
+            m_recordService->registerCardStudentMapping(cardId, card.studentId());
+        }
+    });
+
     emit initialized();
     return true;
 }

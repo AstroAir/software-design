@@ -351,9 +351,9 @@ data/
 ├── cards.json          # 所有校园卡
 ├── admin.json          # 管理员密码
 └── records/
-    ├── C001.json       # C001 的上机记录
-    ├── C002.json       # C002 的上机记录
-    └── ...
+    ├── B17010101.txt   # 学号 B17010101 的上机记录
+    ├── B17010102.txt   # 学号 B17010102 的上机记录
+    └── ...             # 每个学生对应一个文件（以学号命名）
 ```
 
 #### 主要方法
@@ -371,9 +371,9 @@ void createSampleData();
 QList<Card> loadAllCards();
 void saveAllCards(const QList<Card>& cards);
 
-// 记录数据
-QList<Record> loadRecords(const QString& cardId);
-void saveRecords(const QString& cardId, const QList<Record>& records);
+// 记录数据（文件以学号命名，如 B17010101.txt）
+QList<Record> loadRecords(const QString& studentId);
+void saveRecords(const QString& studentId, const QList<Record>& records);
 
 // 管理员密码
 QString loadAdminPassword();

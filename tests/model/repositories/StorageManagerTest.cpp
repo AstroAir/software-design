@@ -172,63 +172,67 @@ TEST_F(StorageManagerTest, SaveAllCardsOverwrite) {
 }
 
 // ========== 记录数据操作测试 ==========
+// 根据文档要求，记录文件以学号命名（如 B17010101.txt）
 
 TEST_F(StorageManagerTest, SaveAndLoadRecords) {
     StorageManager::instance().initializeDataDirectory();
 
+    QString studentId = "B17010101";  // 使用学号作为文件名
     QString cardId = "C001";
     QList<Record> recordsToSave;
     recordsToSave.append(createTestRecord(cardId));
     recordsToSave.append(createTestRecord(cardId));
 
-    EXPECT_TRUE(StorageManager::instance().saveRecords(cardId, recordsToSave));
+    EXPECT_TRUE(StorageManager::instance().saveRecords(studentId, recordsToSave));
 
-    QList<Record> loadedRecords = StorageManager::instance().loadRecords(cardId);
+    QList<Record> loadedRecords = StorageManager::instance().loadRecords(studentId);
     EXPECT_EQ(loadedRecords.size(), 2);
 }
 
 TEST_F(StorageManagerTest, LoadRecordsEmpty) {
     StorageManager::instance().initializeDataDirectory();
 
-    QList<Record> records = StorageManager::instance().loadRecords("C999");
+    QList<Record> records = StorageManager::instance().loadRecords("B99999999");
     EXPECT_TRUE(records.isEmpty());
 }
 
 TEST_F(StorageManagerTest, AppendRecord) {
     StorageManager::instance().initializeDataDirectory();
 
+    QString studentId = "B17010101";  // 使用学号作为文件名
     QString cardId = "C001";
     
     // 先保存一条记录
     QList<Record> initialRecords;
     initialRecords.append(createTestRecord(cardId));
-    StorageManager::instance().saveRecords(cardId, initialRecords);
+    StorageManager::instance().saveRecords(studentId, initialRecords);
 
     // 追加一条记录
     Record newRecord = createTestRecord(cardId);
-    EXPECT_TRUE(StorageManager::instance().appendRecord(cardId, newRecord));
+    EXPECT_TRUE(StorageManager::instance().appendRecord(studentId, newRecord));
 
-    QList<Record> loadedRecords = StorageManager::instance().loadRecords(cardId);
+    QList<Record> loadedRecords = StorageManager::instance().loadRecords(studentId);
     EXPECT_EQ(loadedRecords.size(), 2);
 }
 
 TEST_F(StorageManagerTest, UpdateRecord) {
     StorageManager::instance().initializeDataDirectory();
 
+    QString studentId = "B17010101";  // 使用学号作为文件名
     QString cardId = "C001";
     Record record = createTestRecord(cardId);
     QString recordId = record.recordId();
 
     QList<Record> records;
     records.append(record);
-    StorageManager::instance().saveRecords(cardId, records);
+    StorageManager::instance().saveRecords(studentId, records);
 
     // 更新记录
     record.setCost(5.0);
     record.setDurationMinutes(300);
-    EXPECT_TRUE(StorageManager::instance().updateRecord(cardId, record));
+    EXPECT_TRUE(StorageManager::instance().updateRecord(studentId, record));
 
-    QList<Record> loadedRecords = StorageManager::instance().loadRecords(cardId);
+    QList<Record> loadedRecords = StorageManager::instance().loadRecords(studentId);
     EXPECT_EQ(loadedRecords.size(), 1);
     EXPECT_DOUBLE_EQ(loadedRecords[0].cost(), 5.0);
     EXPECT_EQ(loadedRecords[0].durationMinutes(), 300);
@@ -237,36 +241,37 @@ TEST_F(StorageManagerTest, UpdateRecord) {
 TEST_F(StorageManagerTest, UpdateRecordNotFound) {
     StorageManager::instance().initializeDataDirectory();
 
+    QString studentId = "B17010101";  // 使用学号作为文件名
     QString cardId = "C001";
     Record record = createTestRecord(cardId);
 
     QList<Record> records;
     records.append(record);
-    StorageManager::instance().saveRecords(cardId, records);
+    StorageManager::instance().saveRecords(studentId, records);
 
     // 尝试更新不存在的记录
     Record nonExistentRecord = createTestRecord(cardId);
     nonExistentRecord.setRecordId("non-existent-id");
-    EXPECT_FALSE(StorageManager::instance().updateRecord(cardId, nonExistentRecord));
+    EXPECT_FALSE(StorageManager::instance().updateRecord(studentId, nonExistentRecord));
 }
 
 TEST_F(StorageManagerTest, LoadAllRecords) {
     StorageManager::instance().initializeDataDirectory();
 
-    // 为多个卡保存记录
+    // 为多个学生保存记录（使用学号作为文件名）
     QList<Record> records1;
     records1.append(createTestRecord("C001"));
-    StorageManager::instance().saveRecords("C001", records1);
+    StorageManager::instance().saveRecords("B17010101", records1);
 
     QList<Record> records2;
     records2.append(createTestRecord("C002"));
     records2.append(createTestRecord("C002"));
-    StorageManager::instance().saveRecords("C002", records2);
+    StorageManager::instance().saveRecords("B17010102", records2);
 
     QMap<QString, QList<Record>> allRecords = StorageManager::instance().loadAllRecords();
     EXPECT_EQ(allRecords.size(), 2);
-    EXPECT_EQ(allRecords["C001"].size(), 1);
-    EXPECT_EQ(allRecords["C002"].size(), 2);
+    EXPECT_EQ(allRecords["B17010101"].size(), 1);
+    EXPECT_EQ(allRecords["B17010102"].size(), 2);
 }
 
 // ========== 管理员密码测试 ==========
@@ -301,9 +306,10 @@ TEST_F(StorageManagerTest, ExportAllData) {
     cards.append(createTestCard("C001", "张三", "B17010101", 100.0));
     StorageManager::instance().saveAllCards(cards);
 
+    // 使用学号作为记录文件名
     QList<Record> records;
     records.append(createTestRecord("C001"));
-    StorageManager::instance().saveRecords("C001", records);
+    StorageManager::instance().saveRecords("B17010101", records);
 
     StorageManager::instance().saveAdminPassword("testpass");
 
@@ -396,10 +402,11 @@ TEST_F(StorageManagerTest, SaveEmptyCardList) {
 TEST_F(StorageManagerTest, SaveEmptyRecordList) {
     StorageManager::instance().initializeDataDirectory();
 
+    // 使用学号作为记录文件名
     QList<Record> emptyRecords;
-    EXPECT_TRUE(StorageManager::instance().saveRecords("C001", emptyRecords));
+    EXPECT_TRUE(StorageManager::instance().saveRecords("B17010101", emptyRecords));
 
-    QList<Record> loadedRecords = StorageManager::instance().loadRecords("C001");
+    QList<Record> loadedRecords = StorageManager::instance().loadRecords("B17010101");
     EXPECT_TRUE(loadedRecords.isEmpty());
 }
 

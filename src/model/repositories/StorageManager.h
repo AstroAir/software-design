@@ -105,39 +105,45 @@ public:
     // ========== 记录数据操作 ==========
 
     /**
-     * @brief 加载指定卡号的所有上机记录
-     * @param cardId 卡号
+     * @brief 加载指定学号的所有上机记录
+     * @param studentId 学号（如 B17010101）
      * @return 记录列表
+     *
+     * 根据文档要求，每个学生对应一个文本文件（如 B17010101.txt）存放上机记录
      */
-    QList<Record> loadRecords(const QString& cardId);
+    QList<Record> loadRecords(const QString& studentId);
 
     /**
-     * @brief 保存指定卡号的所有上机记录
-     * @param cardId 卡号
+     * @brief 保存指定学号的所有上机记录
+     * @param studentId 学号（如 B17010101）
      * @param records 记录列表
      * @return 是否成功
+     *
+     * 根据文档要求，记录文件以学号命名（如 B17010101.txt）
      */
-    bool saveRecords(const QString& cardId, const QList<Record>& records);
+    bool saveRecords(const QString& studentId, const QList<Record>& records);
 
     /**
      * @brief 追加一条上机记录
-     * @param cardId 卡号
+     * @param studentId 学号
      * @param record 记录对象
      * @return 是否成功
      */
-    bool appendRecord(const QString& cardId, const Record& record);
+    bool appendRecord(const QString& studentId, const Record& record);
 
     /**
      * @brief 更新一条上机记录
-     * @param cardId 卡号
+     * @param studentId 学号
      * @param record 更新后的记录
      * @return 是否成功
      */
-    bool updateRecord(const QString& cardId, const Record& record);
+    bool updateRecord(const QString& studentId, const Record& record);
 
     /**
-     * @brief 加载所有卡的所有记录（用于管理员统计）
-     * @return 卡号到记录列表的映射
+     * @brief 加载所有学生的所有记录（用于管理员统计）
+     * @return 学号到记录列表的映射
+     *
+     * 遍历 records 目录下所有 .txt 文件
      */
     QMap<QString, QList<Record>> loadAllRecords();
 

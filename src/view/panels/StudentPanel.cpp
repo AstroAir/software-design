@@ -13,6 +13,7 @@
 #include "ElaMessageBar.h"
 #include "ElaPushButton.h"
 #include "ElaText.h"
+#include "ElaTheme.h"
 
 #include <QDate>
 #include <QDateEdit>
@@ -65,7 +66,7 @@ void StudentPanel::initUI() {
     auto* balanceTitleLabel = new ElaText(QStringLiteral("余额："), cardGroup);
     m_balanceLabel = new ElaText(QStringLiteral("-- 元"), cardGroup);
     m_balanceLabel->setTextPixelSize(20);
-    m_balanceLabel->setStyleSheet(QStringLiteral("color: #27AE60; font-weight: bold;"));
+    // 余额颜色将在updateCardInfo中动态设置以适配主题
     cardLayout->addWidget(balanceTitleLabel, 1, 0);
     cardLayout->addWidget(m_balanceLabel, 1, 1);
 
@@ -135,7 +136,7 @@ void StudentPanel::initUI() {
     auto* costTitleLabel = new ElaText(QStringLiteral("总消费金额："), statsGroup);
     m_totalCostLabel = new ElaText(QStringLiteral("0.00 元"), statsGroup);
     m_totalCostLabel->setTextPixelSize(16);
-    m_totalCostLabel->setStyleSheet(QStringLiteral("color: #E74C3C;"));
+    // 消费颜色将在updateStatistics中动态设置以适配主题
     statsLayout->addWidget(costTitleLabel, 1, 0);
     statsLayout->addWidget(m_totalCostLabel, 1, 1);
 
@@ -196,6 +197,9 @@ void StudentPanel::initUI() {
 }
 
 void StudentPanel::initConnections() {
+    // 主题切换时刷新界面以更新颜色
+    connect(eTheme, &ElaTheme::themeModeChanged, this, &StudentPanel::refresh);
+
     // 上机操作按钮
     connect(m_startSessionBtn, &ElaPushButton::clicked, this, &StudentPanel::onStartSessionClicked);
     connect(m_endSessionBtn, &ElaPushButton::clicked, this, &StudentPanel::onEndSessionClicked);
@@ -303,23 +307,35 @@ void StudentPanel::updateCardInfo() {
     m_studentIdLabel->setText(card.studentId());
     m_balanceLabel->setText(QString::number(card.balance(), 'f', 2) + QStringLiteral(" 元"));
 
-    // 根据状态设置不同颜色
+    // 余额颜色（适配明暗主题）
+    bool isDark = (eTheme->getThemeMode() == ElaThemeType::Dark);
+    QColor balanceColor = isDark ? QColor(46, 204, 113) : QColor(39, 174, 96);  // 绿色
+    m_balanceLabel->setStyleSheet(
+        QStringLiteral("color: %1; font-weight: bold;").arg(balanceColor.name()));
+
+    // 根据状态设置不同颜色（适配明暗主题）
     QString stateText = cardStateToString(card.state());
     m_statusLabel->setText(stateText);
     if (card.state() == CardState::Normal) {
-        m_statusLabel->setStyleSheet(QStringLiteral("color: #27AE60;"));
+        QColor normalColor = isDark ? QColor(46, 204, 113) : QColor(39, 174, 96);  // 绿色
+        m_statusLabel->setStyleSheet(QStringLiteral("color: %1;").arg(normalColor.name()));
     } else if (card.state() == CardState::Lost) {
-        m_statusLabel->setStyleSheet(QStringLiteral("color: #F39C12;"));
+        QColor lostColor = isDark ? QColor(255, 183, 77) : QColor(230, 126, 34);  // 橙色
+        m_statusLabel->setStyleSheet(QStringLiteral("color: %1;").arg(lostColor.name()));
     } else {
-        m_statusLabel->setStyleSheet(QStringLiteral("color: #E74C3C;"));
+        QColor frozenColor = ElaThemeColor(eTheme->getThemeMode(), StatusDanger);
+        m_statusLabel->setStyleSheet(QStringLiteral("color: %1;").arg(frozenColor.name()));
     }
 }
 
 void StudentPanel::updateSessionStatus() {
     Card card = m_cardController->getCard(m_currentCardId);
+    bool isDark = (eTheme->getThemeMode() == ElaThemeType::Dark);
+
     if (card.cardId().isEmpty() || !card.isUsable()) {
         m_sessionLabel->setText(QStringLiteral("当前状态：卡片不可用"));
-        m_sessionLabel->setStyleSheet(QStringLiteral("color: #E74C3C;"));
+        QColor errorColor = ElaThemeColor(eTheme->getThemeMode(), StatusDanger);
+        m_sessionLabel->setStyleSheet(QStringLiteral("color: %1;").arg(errorColor.name()));
         m_sessionTimeLabel->setText(QString());
         m_sessionLocationLabel->setText(QString());
         m_startSessionBtn->setEnabled(false);
@@ -333,7 +349,9 @@ void StudentPanel::updateSessionStatus() {
         Record session = m_recordController->getCurrentSession(m_currentCardId);
         if (session.isValid()) {
             m_sessionLabel->setText(QStringLiteral("当前状态：🟢 上机中"));
-            m_sessionLabel->setStyleSheet(QStringLiteral("color: #27AE60; font-weight: bold;"));
+            QColor onlineColor = isDark ? QColor(46, 204, 113) : QColor(39, 174, 96);  // 绿色
+            m_sessionLabel->setStyleSheet(
+                QStringLiteral("color: %1; font-weight: bold;").arg(onlineColor.name()));
             QString startTime = session.startTime().toString(QStringLiteral("yyyy-MM-dd HH:mm:ss"));
             m_sessionTimeLabel->setText(QStringLiteral("开始时间：") + startTime);
             m_sessionLocationLabel->setText(QStringLiteral("  地点：") + session.location());
@@ -347,7 +365,8 @@ void StudentPanel::updateSessionStatus() {
         m_endSessionBtn->setEnabled(true);
     } else {
         m_sessionLabel->setText(QStringLiteral("当前状态：⚪ 离线"));
-        m_sessionLabel->setStyleSheet(QStringLiteral("color: #7F8C8D;"));
+        QColor offlineColor = isDark ? QColor(149, 165, 166) : QColor(127, 140, 141);  // 灰色
+        m_sessionLabel->setStyleSheet(QStringLiteral("color: %1;").arg(offlineColor.name()));
         m_sessionTimeLabel->setText(QString());
         m_sessionLocationLabel->setText(QString());
         m_startSessionBtn->setEnabled(card.balance() > 0);
@@ -368,6 +387,10 @@ void StudentPanel::updateStatistics() {
                                   QString::number(minutes) + QStringLiteral(" 分钟"));
 
     m_totalCostLabel->setText(QString::number(totalCost, 'f', 2) + QStringLiteral(" 元"));
+
+    // 消费金额颜色（适配明暗主题）
+    QColor costColor = ElaThemeColor(eTheme->getThemeMode(), StatusDanger);
+    m_totalCostLabel->setStyleSheet(QStringLiteral("color: %1;").arg(costColor.name()));
 }
 
 void StudentPanel::updateLocationFilter() {

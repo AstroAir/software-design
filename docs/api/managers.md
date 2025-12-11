@@ -381,8 +381,9 @@ void saveAllCards(const QList<Card>& cards);
 ##### 记录数据读写
 
 ```cpp
-QList<Record> loadRecords(const QString& cardId);
-void saveRecords(const QString& cardId, const QList<Record>& records);
+// 根据文档要求，记录文件以学号命名（如 B17010101.txt）
+QList<Record> loadRecords(const QString& studentId);
+void saveRecords(const QString& studentId, const QList<Record>& records);
 ```
 
 ##### 管理员密码读写

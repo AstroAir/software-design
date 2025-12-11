@@ -84,6 +84,7 @@ void StorageManager::createSampleData() {
     saveAdminPassword(DEFAULT_ADMIN_PASSWORD);
 
     // 创建示例上机记录
+    // 根据文档要求，记录文件以学号命名（如 B17010101.txt）
     Record record1;
     record1.setRecordId(QUuid::createUuid().toString(QUuid::WithoutBraces));
     record1.setCardId(QStringLiteral("C001"));
@@ -93,7 +94,7 @@ void StorageManager::createSampleData() {
     record1.setDurationMinutes(60);
     record1.setCost(1.0);
     record1.setState(SessionState::Offline);
-    appendRecord(QStringLiteral("C001"), record1);
+    appendRecord(QStringLiteral("B17010101"), record1);  // 使用学号作为文件名
 }
 
 // ========== 卡数据操作 ==========
@@ -155,10 +156,11 @@ Card StorageManager::loadCard(const QString& cardId) {
 }
 
 // ========== 记录数据操作 ==========
+// 根据文档要求，每个学生对应一个文本文件（如 B17010101.txt）存放上机记录
 
-QList<Record> StorageManager::loadRecords(const QString& cardId) {
+QList<Record> StorageManager::loadRecords(const QString& studentId) {
     QList<Record> records;
-    QString filePath = m_dataPath + QStringLiteral("/records/") + cardId + QStringLiteral(".json");
+    QString filePath = m_dataPath + QStringLiteral("/records/") + studentId + QStringLiteral(".txt");
 
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -182,8 +184,8 @@ QList<Record> StorageManager::loadRecords(const QString& cardId) {
     return records;
 }
 
-bool StorageManager::saveRecords(const QString& cardId, const QList<Record>& records) {
-    QString filePath = m_dataPath + QStringLiteral("/records/") + cardId + QStringLiteral(".json");
+bool StorageManager::saveRecords(const QString& studentId, const QList<Record>& records) {
+    QString filePath = m_dataPath + QStringLiteral("/records/") + studentId + QStringLiteral(".txt");
 
     QJsonArray array;
     for (const auto& record : records) {
@@ -202,19 +204,19 @@ bool StorageManager::saveRecords(const QString& cardId, const QList<Record>& rec
     return true;
 }
 
-bool StorageManager::appendRecord(const QString& cardId, const Record& record) {
-    QList<Record> records = loadRecords(cardId);
+bool StorageManager::appendRecord(const QString& studentId, const Record& record) {
+    QList<Record> records = loadRecords(studentId);
     records.append(record);
-    return saveRecords(cardId, records);
+    return saveRecords(studentId, records);
 }
 
-bool StorageManager::updateRecord(const QString& cardId, const Record& record) {
-    QList<Record> records = loadRecords(cardId);
+bool StorageManager::updateRecord(const QString& studentId, const Record& record) {
+    QList<Record> records = loadRecords(studentId);
 
     for (int i = 0; i < records.size(); ++i) {
         if (records[i].recordId() == record.recordId()) {
             records[i] = record;
-            return saveRecords(cardId, records);
+            return saveRecords(studentId, records);
         }
     }
 
@@ -227,10 +229,11 @@ QMap<QString, QList<Record>> StorageManager::loadAllRecords() {
     QString recordsDir = m_dataPath + QStringLiteral("/records");
     QDir dir(recordsDir);
 
-    QStringList files = dir.entryList(QStringList() << QStringLiteral("*.json"), QDir::Files);
+    // 根据文档要求，记录文件以学号命名，后缀为 .txt
+    QStringList files = dir.entryList(QStringList() << QStringLiteral("*.txt"), QDir::Files);
     for (const auto& fileName : files) {
-        QString cardId = fileName.left(fileName.length() - 5);  // 去掉 .json 后缀
-        allRecords[cardId] = loadRecords(cardId);
+        QString studentId = fileName.left(fileName.length() - 4);  // 去掉 .txt 后缀
+        allRecords[studentId] = loadRecords(studentId);
     }
 
     return allRecords;
@@ -359,9 +362,9 @@ void StorageManager::generateMockData(int cardCount, int recordsPerCard) {
             records.append(record);
         }
 
-        // 保存记录
+        // 保存记录（使用学号作为文件名，符合文档要求）
         if (!records.isEmpty()) {
-            saveRecords(cardId, records);
+            saveRecords(studentId, records);
         }
     }
 
@@ -466,11 +469,11 @@ bool StorageManager::importData(const QString& filePath, bool merge) {
         saveAdminPassword(root[QStringLiteral("adminPassword")].toString());
     }
 
-    // 导入记录
+    // 导入记录（记录文件以学号命名，符合文档要求）
     if (root.contains(QStringLiteral("records"))) {
         QJsonObject recordsObj = root[QStringLiteral("records")].toObject();
         for (auto it = recordsObj.begin(); it != recordsObj.end(); ++it) {
-            QString cardId = it.key();
+            QString studentId = it.key();  // key 为学号
             QJsonArray recordsArray = it.value().toArray();
 
             QList<Record> importedRecords;
@@ -482,12 +485,12 @@ bool StorageManager::importData(const QString& filePath, bool merge) {
 
             if (merge) {
                 // 合并模式：追加记录
-                QList<Record> existingRecords = loadRecords(cardId);
+                QList<Record> existingRecords = loadRecords(studentId);
                 existingRecords.append(importedRecords);
-                saveRecords(cardId, existingRecords);
+                saveRecords(studentId, existingRecords);
             } else {
                 // 覆盖模式
-                saveRecords(cardId, importedRecords);
+                saveRecords(studentId, importedRecords);
             }
         }
     }

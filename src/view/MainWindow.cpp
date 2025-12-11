@@ -19,6 +19,8 @@
 #include "view/panels/StudentPanel.h"
 
 #include <QCoreApplication>
+#include <QIcon>
+#include <QPixmap>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -31,6 +33,11 @@ MainWindow::MainWindow(QWidget* parent) : ElaWindow(parent) {
         ElaMessageBar::error(ElaMessageBarType::TopRight, QStringLiteral("错误"),
                              QStringLiteral("初始化失败"), 3000, this);
     }
+
+    // 设置系统任务栏图标
+    setWindowIcon(QIcon(QStringLiteral(":/icons/app.png")));
+    // 设置侧边栏头像图标
+    setUserInfoCardPixmap(QPixmap(QStringLiteral(":/icons/app.png")));
 
     initUI();
     initConnections();

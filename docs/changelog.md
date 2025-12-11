@@ -2,6 +2,31 @@
 
 本文档记录项目的版本更新历史。
 
+## [1.2.0] - 2025-12-11
+
+### 变更
+
+- **数据存储格式调整**
+  - 上机记录文件从 `<卡号>.json` 改为 `<学号>.txt`（如 `B17010101.txt`）
+  - 符合文档要求：每个学生对应一个文本文件存放上机记录
+  - `StorageManager` 记录方法参数从 `cardId` 改为 `studentId`
+  - `RecordService` 新增 `registerCardStudentMapping` 方法处理卡号到学号的映射
+  - `MainController` 在创建新卡时自动注册卡号到学号的映射
+
+### 文档更新
+
+- 更新 README.md 中的数据存储说明
+- 更新 docs/api/data-models.md 中的文件结构说明
+- 更新 docs/api/managers.md 中的接口文档
+- 更新 docs/architecture/core-modules.md 中的存储管理器说明
+
+### 测试更新
+
+- 更新 StorageManagerTest.cpp 使用学号作为记录文件名
+- 更新 RecordServiceTest.cpp 添加测试卡数据以支持卡号到学号映射
+
+---
+
 ## [1.1.0] - 2025-12-10
 
 ### 新增

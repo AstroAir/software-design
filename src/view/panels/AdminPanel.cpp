@@ -14,6 +14,7 @@
 #include "ElaPushButton.h"
 #include "ElaTableView.h"
 #include "ElaText.h"
+#include "ElaTheme.h"
 #include "view/dialogs/RechargeDialog.h"
 #include "view/dialogs/RegisterDialog.h"
 #include "view/widgets/StatisticsWidget.h"
@@ -146,6 +147,9 @@ void AdminPanel::initUI() {
 }
 
 void AdminPanel::initConnections() {
+    // 主题切换时刷新列表以更新颜色
+    connect(eTheme, &ElaTheme::themeModeChanged, this, &AdminPanel::refreshCardList);
+
     // 卡操作按钮
     connect(m_rechargeBtn, &ElaPushButton::clicked, this, &AdminPanel::onRechargeClicked);
     connect(m_reportLostBtn, &ElaPushButton::clicked, this, &AdminPanel::onReportLostClicked);
@@ -250,14 +254,20 @@ void AdminPanel::refreshCardList() {
         row << new QStandardItem(cardStateToString(card.state()));
         row << new QStandardItem(QString::number(card.totalRecharge(), 'f', 2));
 
-        // 根据状态设置颜色
+        // 根据状态设置颜色（适配明暗主题）
         if (card.state() == CardState::Lost) {
+            // 挂失状态：明亮模式用深橙色，暗黑模式用浅橙色
+            QColor lostColor = (eTheme->getThemeMode() == ElaThemeType::Light)
+                                   ? QColor(230, 126, 34)   // 深橙色
+                                   : QColor(255, 183, 77);  // 浅橙色
             for (auto* item : row) {
-                item->setForeground(QColor(243, 156, 18));  // 橙色
+                item->setForeground(lostColor);
             }
         } else if (card.state() == CardState::Frozen) {
+            // 冻结状态：使用主题的危险色
+            QColor frozenColor = ElaThemeColor(eTheme->getThemeMode(), StatusDanger);
             for (auto* item : row) {
-                item->setForeground(QColor(231, 76, 60));  // 红色
+                item->setForeground(frozenColor);
             }
         }
 
