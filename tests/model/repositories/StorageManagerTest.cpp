@@ -122,8 +122,8 @@ TEST_F(StorageManagerTest, SaveAndLoadAllCards) {
 TEST_F(StorageManagerTest, LoadAllCardsEmpty) {
     StorageManager::instance().initializeDataDirectory();
     
-    // 删除cards.json文件
-    QFile::remove(testDataPath + "/cards.json");
+    // 删除cards.txt文件
+    QFile::remove(testDataPath + "/cards.txt");
     
     QList<Card> cards = StorageManager::instance().loadAllCards();
     EXPECT_TRUE(cards.isEmpty());
@@ -289,8 +289,8 @@ TEST_F(StorageManagerTest, SaveAndLoadAdminPassword) {
 TEST_F(StorageManagerTest, LoadAdminPasswordDefault) {
     StorageManager::instance().initializeDataDirectory();
 
-    // 删除admin.json文件
-    QFile::remove(testDataPath + "/admin.json");
+    // 删除admin.txt文件
+    QFile::remove(testDataPath + "/admin.txt");
 
     QString password = StorageManager::instance().loadAdminPassword();
     EXPECT_EQ(password, DEFAULT_ADMIN_PASSWORD);
@@ -314,7 +314,7 @@ TEST_F(StorageManagerTest, ExportAllData) {
     StorageManager::instance().saveAdminPassword("testpass");
 
     // 导出
-    QString exportPath = testDataPath + "/export.json";
+    QString exportPath = testDataPath + "/export.txt";
     EXPECT_TRUE(StorageManager::instance().exportAllData(exportPath));
     EXPECT_TRUE(QFile::exists(exportPath));
 }
@@ -328,7 +328,7 @@ TEST_F(StorageManagerTest, ImportDataOverwrite) {
     StorageManager::instance().saveAllCards(originalCards);
 
     // 导出
-    QString exportPath = testDataPath + "/export.json";
+    QString exportPath = testDataPath + "/export.txt";
     StorageManager::instance().exportAllData(exportPath);
 
     // 修改数据
@@ -353,7 +353,7 @@ TEST_F(StorageManagerTest, ImportDataMerge) {
     StorageManager::instance().saveAllCards(originalCards);
 
     // 导出
-    QString exportPath = testDataPath + "/export.json";
+    QString exportPath = testDataPath + "/export.txt";
     StorageManager::instance().exportAllData(exportPath);
 
     // 添加新数据
@@ -370,7 +370,7 @@ TEST_F(StorageManagerTest, ImportDataMerge) {
 
 TEST_F(StorageManagerTest, ImportDataFileNotFound) {
     StorageManager::instance().initializeDataDirectory();
-    EXPECT_FALSE(StorageManager::instance().importData("/nonexistent/path.json", false));
+    EXPECT_FALSE(StorageManager::instance().importData("/nonexistent/path.txt", false));
 }
 
 // ========== 模拟数据生成测试 ==========

@@ -136,7 +136,7 @@ TEST_F(MainControllerTest, ExportData) {
 
     QSignalSpy successSpy(mainController, &MainController::exportSuccess);
 
-    QString exportPath = testDataPath + "/export.json";
+    QString exportPath = testDataPath + "/export.txt";
     EXPECT_TRUE(mainController->exportData(exportPath));
     EXPECT_EQ(successSpy.count(), 1);
     EXPECT_TRUE(QFile::exists(exportPath));
@@ -148,7 +148,7 @@ TEST_F(MainControllerTest, ExportDataInvalidPath) {
     QSignalSpy failedSpy(mainController, &MainController::exportFailed);
 
     // 尝试导出到不存在的目录
-    EXPECT_FALSE(mainController->exportData("/nonexistent/directory/export.json"));
+    EXPECT_FALSE(mainController->exportData("/nonexistent/directory/export.txt"));
     EXPECT_EQ(failedSpy.count(), 1);
 }
 
@@ -159,7 +159,7 @@ TEST_F(MainControllerTest, ImportDataOverwrite) {
     mainController->cardService()->createCard("C001", "张三", "B17010101", 100.0);
 
     // 导出
-    QString exportPath = testDataPath + "/export.json";
+    QString exportPath = testDataPath + "/export.txt";
     mainController->exportData(exportPath);
 
     // 添加新数据
@@ -181,7 +181,7 @@ TEST_F(MainControllerTest, ImportDataMerge) {
     mainController->cardService()->createCard("C001", "张三", "B17010101", 100.0);
 
     // 导出
-    QString exportPath = testDataPath + "/export.json";
+    QString exportPath = testDataPath + "/export.txt";
     mainController->exportData(exportPath);
 
     // 清空数据并创建新数据
@@ -202,7 +202,7 @@ TEST_F(MainControllerTest, ImportDataInvalidFile) {
 
     QSignalSpy failedSpy(mainController, &MainController::importFailed);
 
-    EXPECT_FALSE(mainController->importData("/nonexistent/file.json", false));
+    EXPECT_FALSE(mainController->importData("/nonexistent/file.txt", false));
     EXPECT_EQ(failedSpy.count(), 1);
 }
 
