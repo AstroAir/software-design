@@ -416,8 +416,8 @@ void AdminPanel::onStatisticsClicked() {
 
 void AdminPanel::onExportClicked() {
     QString filePath = QFileDialog::getSaveFileName(this, QStringLiteral("导出数据"),
-                                                    QStringLiteral("campus_card_data.json"),
-                                                    QStringLiteral("JSON Files (*.json)"));
+                                                    QStringLiteral("campus_card_data.txt"),
+                                                    QStringLiteral("Text Files (*.txt)"));
     if (!filePath.isEmpty()) {
         m_mainController->exportData(filePath);
     }
@@ -425,7 +425,7 @@ void AdminPanel::onExportClicked() {
 
 void AdminPanel::onImportClicked() {
     QString filePath = QFileDialog::getOpenFileName(this, QStringLiteral("导入数据"), QString(),
-                                                    QStringLiteral("JSON Files (*.json)"));
+                                                    QStringLiteral("Text Files (*.txt)"));
     if (!filePath.isEmpty()) {
         QMessageBox::StandardButton reply = QMessageBox::question(
             this, QStringLiteral("导入方式"),

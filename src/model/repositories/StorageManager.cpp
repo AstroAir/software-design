@@ -51,7 +51,7 @@ bool StorageManager::initializeDataDirectory() {
     }
 
     // 检查是否需要创建示例数据
-    QString cardsFile = m_dataPath + QStringLiteral("/cards.json");
+    QString cardsFile = m_dataPath + QStringLiteral("/cards.txt");
     if (!QFile::exists(cardsFile)) {
         createSampleData();
     }
@@ -101,7 +101,7 @@ void StorageManager::createSampleData() {
 
 QList<Card> StorageManager::loadAllCards() {
     QList<Card> cards;
-    QString filePath = m_dataPath + QStringLiteral("/cards.json");
+    QString filePath = m_dataPath + QStringLiteral("/cards.txt");
 
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -126,7 +126,7 @@ QList<Card> StorageManager::loadAllCards() {
 }
 
 bool StorageManager::saveAllCards(const QList<Card>& cards) {
-    QString filePath = m_dataPath + QStringLiteral("/cards.json");
+    QString filePath = m_dataPath + QStringLiteral("/cards.txt");
 
     QJsonArray array;
     for (const auto& card : cards) {
@@ -242,7 +242,7 @@ QMap<QString, QList<Record>> StorageManager::loadAllRecords() {
 // ========== 管理员数据 ==========
 
 QString StorageManager::loadAdminPassword() {
-    QString filePath = m_dataPath + QStringLiteral("/admin.json");
+    QString filePath = m_dataPath + QStringLiteral("/admin.txt");
 
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -260,7 +260,7 @@ QString StorageManager::loadAdminPassword() {
 }
 
 bool StorageManager::saveAdminPassword(const QString& password) {
-    QString filePath = m_dataPath + QStringLiteral("/admin.json");
+    QString filePath = m_dataPath + QStringLiteral("/admin.txt");
 
     QJsonObject obj;
     obj[QStringLiteral("password")] = password;

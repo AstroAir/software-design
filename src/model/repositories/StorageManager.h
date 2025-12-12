@@ -28,9 +28,9 @@ namespace CampusCard {
  * @brief 单例存储管理器，负责所有数据的文件读写
  *
  * 数据存储结构：
- * - data/cards.json: 所有校园卡信息
- * - data/admin.json: 管理员密码
- * - data/records/<cardId>.json: 每个学生的上机记录
+ * - data/cards.txt: 所有校园卡信息
+ * - data/admin.txt: 管理员密码
+ * - data/records/<studentId>.txt: 每个学生的上机记录
  *
  * 作为Repository层，只负责：
  * - 数据的持久化存储
